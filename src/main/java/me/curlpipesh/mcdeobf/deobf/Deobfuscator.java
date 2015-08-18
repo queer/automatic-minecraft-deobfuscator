@@ -54,13 +54,15 @@ public abstract class Deobfuscator {
         int len = cr.getItemCount();
         for(int i = 0; i < len; i++) {
             try {
-                char[] buffer = new char[0xFFF];
+                char[] buffer = new char[0xFFFF];
                 Object o = cr.readConst(i, buffer);
                 if(o instanceof String) {
                     constantPoolStrings.add((String) o);
                 }
             } catch(Exception e) {
-                e.printStackTrace();
+                if(!(e instanceof ArrayIndexOutOfBoundsException)) {
+                    e.printStackTrace();
+                }
             }
         }
         return constantPoolStrings;

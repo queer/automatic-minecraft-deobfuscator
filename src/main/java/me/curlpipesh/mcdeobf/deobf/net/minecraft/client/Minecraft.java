@@ -9,9 +9,7 @@ import org.objectweb.asm.tree.*;
 import java.util.Iterator;
 import java.util.List;
 
-import static me.curlpipesh.bytecodetools.util.AccessHelper.isPublic;
-import static me.curlpipesh.bytecodetools.util.AccessHelper.isStatic;
-import static me.curlpipesh.bytecodetools.util.AccessHelper.isVoid;
+import static me.curlpipesh.mcdeobf.util.AccessHelper.*;
 
 public class Minecraft extends Deobfuscator {
     public Minecraft() {
@@ -51,8 +49,6 @@ public class Minecraft extends Deobfuscator {
                     }
                 }
             }
-            if(isPublic(m.access) && isVoid(m.desc)) {
-            }
             if(isPublic(m.access) && isStatic(m.access) && m.desc.equals("()L" + cn.name + ";")) {
                 c.addMethod("getMinecraft", m.name);
             }
@@ -64,7 +60,7 @@ public class Minecraft extends Deobfuscator {
                 c.addField("theWorld", f.name);
             }
             if(Main.getInstance().getDeobfuscators().stream()
-                    .filter(d -> d.getDeobfuscatedName().equals("EntityThePlayer")).findFirst().get()
+                    .filter(d -> d.getDeobfuscatedName().equals("EntityClientPlayer")).findFirst().get()
                     .getObfuscatedDescription().equalsIgnoreCase(f.desc)) {
                 c.addField("thePlayer", f.name);
             }

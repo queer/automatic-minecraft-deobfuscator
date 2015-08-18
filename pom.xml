@@ -83,13 +83,6 @@
             <version>1.16.2</version>
             <classifier>sources</classifier>
         </dependency>
-
-        <!-- Yay my stuff o-o -->
-        <dependency>
-            <groupId>me.curlpipesh.bytecodetools</groupId>
-            <artifactId>BytecodeTools</artifactId>
-            <version>0.1-SNAPSHOT</version>
-        </dependency>
     </dependencies>
 
     <build>
@@ -139,6 +132,18 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>1.2.1</version>
+                <configuration>
+                    <mainClass>me.curlpipesh.mcdeobf.Main</mainClass>
+                    <arguments>
+                        <!--argument>argument1</argument-->
+                    </arguments>
+                </configuration>
             </plugin>
         </plugins>
     </build>
