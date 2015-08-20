@@ -1,20 +1,14 @@
 package me.curlpipesh.mcdeobf.deobf.net.minecraft.entity;
 
-import me.curlpipesh.mcdeobf.Main;
 import me.curlpipesh.mcdeobf.deobf.ClassDef;
 import me.curlpipesh.mcdeobf.deobf.Deobfuscator;
 import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.tree.AbstractInsnNode;
-import org.objectweb.asm.tree.ClassNode;
-import org.objectweb.asm.tree.LdcInsnNode;
-import org.objectweb.asm.tree.MethodNode;
+import org.objectweb.asm.tree.*;
 
 import java.util.Iterator;
 import java.util.List;
-import java.util.Optional;
 
 import static me.curlpipesh.mcdeobf.util.AccessHelper.isPublic;
-import static me.curlpipesh.mcdeobf.util.AccessHelper.isStatic;
 import static me.curlpipesh.mcdeobf.util.AccessHelper.isVoid;
 
 /**
@@ -41,8 +35,13 @@ public class EntityClientPlayer extends Deobfuscator {
 
         ClassDef c = new ClassDef(cn.name, getDeobfuscatedName());
 
+        //Reason for this is because it has 2 of the same method...
+        boolean foundChatMessage = false;
+
         for(MethodNode m : (List<MethodNode>) cn.methods) {
             if(isPublic(m.access) && isVoid(m.desc)) {
+                MethodInsnNode lastMethodNode = null, secondLastNode = null;
+
                 Iterator<AbstractInsnNode> i = m.instructions.iterator();
                 while(i.hasNext()) {
                     AbstractInsnNode node = i.next();
@@ -55,6 +54,22 @@ public class EntityClientPlayer extends Deobfuscator {
                             }
                         }
                     }
+                    else if(node instanceof MethodInsnNode){
+                        secondLastNode = lastMethodNode;
+                        lastMethodNode = (MethodInsnNode)node;
+                    }
+                }
+
+                if(lastMethodNode != null && !foundChatMessage && lastMethodNode.desc.equals(m.desc)
+                        && m.desc.startsWith("(L") && m.desc.endsWith(";)V")){
+                    foundChatMessage = true;
+                    System.out.println("Found addChatMessage: " + m.name + m.desc);
+                    c.addMethod("addChatMessage", m.name);
+                }
+
+                if(secondLastNode != null && secondLastNode.name.equals("<init>")
+                        && secondLastNode.desc.equals("(Ljava/lang/String;)V") && secondLastNode.desc.equals(m.desc)){
+                    c.addMethod("sendChatMessage", m.name);
                 }
             }
         }
