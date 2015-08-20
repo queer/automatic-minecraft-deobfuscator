@@ -28,6 +28,7 @@ public class EntityClientPlayer extends Deobfuscator {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public ClassDef getClassDefinition(byte[] classData) {
         ClassReader cr = new ClassReader(classData);
         ClassNode cn = new ClassNode();
@@ -35,7 +36,7 @@ public class EntityClientPlayer extends Deobfuscator {
 
         ClassDef c = new ClassDef(cn.name, getDeobfuscatedName());
 
-        //Reason for this is because it has 2 of the same method...
+        // Reason for this is because it has 2 of the same method...
         boolean foundChatMessage = false;
 
         for(MethodNode m : (List<MethodNode>) cn.methods) {
@@ -48,27 +49,26 @@ public class EntityClientPlayer extends Deobfuscator {
                     if(node instanceof LdcInsnNode) {
                         final Object ldc = ((LdcInsnNode) node).cst;
                         if(ldc instanceof Double) {
-                            if((Double)ldc == -999.0) {
+                            if((Double) ldc == -999.0) {
                                 c.addMethod("onMotionUpdate", m.name);
                                 break;
                             }
                         }
-                    }
-                    else if(node instanceof MethodInsnNode){
+                    } else if(node instanceof MethodInsnNode) {
                         secondLastNode = lastMethodNode;
-                        lastMethodNode = (MethodInsnNode)node;
+                        lastMethodNode = (MethodInsnNode) node;
                     }
                 }
 
                 if(lastMethodNode != null && !foundChatMessage && lastMethodNode.desc.equals(m.desc)
-                        && m.desc.startsWith("(L") && m.desc.endsWith(";)V")){
+                        && m.desc.startsWith("(L") && m.desc.endsWith(";)V")) {
                     foundChatMessage = true;
-                    System.out.println("Found addChatMessage: " + m.name + m.desc);
+                    //System.out.println("Found addChatMessage: " + m.name + m.desc);
                     c.addMethod("addChatMessage", m.name);
                 }
 
                 if(secondLastNode != null && secondLastNode.name.equals("<init>")
-                        && secondLastNode.desc.equals("(Ljava/lang/String;)V") && secondLastNode.desc.equals(m.desc)){
+                        && secondLastNode.desc.equals("(Ljava/lang/String;)V") && secondLastNode.desc.equals(m.desc)) {
                     c.addMethod("sendChatMessage", m.name);
                 }
             }

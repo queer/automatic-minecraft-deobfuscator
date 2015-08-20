@@ -1,30 +1,21 @@
 package me.curlpipesh.mcdeobf;
 
 import lombok.Getter;
-import me.curlpipesh.mcdeobf.deobf.ClassDef;
-import me.curlpipesh.mcdeobf.deobf.Deobfuscator;
-import me.curlpipesh.mcdeobf.deobf.net.minecraft.client.GameSettings;
-import me.curlpipesh.mcdeobf.deobf.net.minecraft.client.Minecraft;
-import me.curlpipesh.mcdeobf.deobf.net.minecraft.client.gui.FontRenderer;
-import me.curlpipesh.mcdeobf.deobf.net.minecraft.client.gui.GuiIngame;
-import me.curlpipesh.mcdeobf.deobf.net.minecraft.client.renderer.EntityRenderer;
-import me.curlpipesh.mcdeobf.deobf.net.minecraft.entity.Entity;
-import me.curlpipesh.mcdeobf.deobf.net.minecraft.entity.EntityClientPlayer;
-import me.curlpipesh.mcdeobf.deobf.net.minecraft.world.AbstractWorld;
-import me.curlpipesh.mcdeobf.deobf.net.minecraft.world.World;
-import me.curlpipesh.mcdeobf.deobf.net.minecraft.world.WorldProvider;
+import me.curlpipesh.mcdeobf.deobf.*;
+import me.curlpipesh.mcdeobf.deobf.net.minecraft.client.*;
+import me.curlpipesh.mcdeobf.deobf.net.minecraft.client.gui.*;
+import me.curlpipesh.mcdeobf.deobf.net.minecraft.client.renderer.*;
+import me.curlpipesh.mcdeobf.deobf.net.minecraft.entity.*;
+import me.curlpipesh.mcdeobf.deobf.net.minecraft.util.*;
+import me.curlpipesh.mcdeobf.deobf.net.minecraft.world.*;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Arrays;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.jar.JarEntry;
-import java.util.jar.JarFile;
+import java.io.*;
+import java.util.*;
+import java.util.concurrent.*;
+import java.util.jar.*;
+import java.util.logging.Handler;
+import java.util.logging.LogRecord;
+import java.util.logging.Logger;
 
 /**
  * @author c
@@ -40,27 +31,49 @@ public class Main {
     @Getter
     private final List<Deobfuscator> deobfuscators;
 
+    @Getter
+    private final Logger logger = Logger.getLogger("Deobfuscator");
+
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
     private Map<Deobfuscator, Byte[]> dataToMap = new ConcurrentHashMap<>();
 
-    @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
+    @SuppressWarnings( {"MismatchedQueryAndUpdateOfCollection", "FieldCanBeLocal"})
     private final List<ClassDef> classDefs;
 
     private Main() {
         deobfuscators = new CopyOnWriteArrayList<>();
         classDefs = new CopyOnWriteArrayList<>();
         add(
-                new Minecraft(),
                 new FontRenderer(),
-                new EntityRenderer(),
                 new GuiIngame(),
+                new EntityRenderer(),
                 new GameSettings(),
+                new Minecraft(),
                 new Entity(),
                 new EntityClientPlayer(),
+                new ChatComponentText(),
+                new IChatComponent(),
+                new ScaledResolution(),
                 new AbstractWorld(),
                 new World(),
                 new WorldProvider()
         );
+        logger.setUseParentHandlers(false);
+        logger.addHandler(new Handler() {
+            @Override
+            public void publish(LogRecord logRecord) {
+                System.out.println(String.format("[%s] [%s] %s", logRecord.getLoggerName(), logRecord.getLevel(),
+                        logRecord.getMessage()));
+            }
+
+            @Override
+            public void flush() {
+            }
+
+            @Override
+            public void close() throws SecurityException {
+            }
+        });
     }
 
     private void add(Deobfuscator... d) {
@@ -77,6 +90,8 @@ public class Main {
     }
 
     private void run(String jar) {
+        int successes = 0;
+        int max = deobfuscators.size();
         try {
             JarFile jarFile = new JarFile(jar);
             Enumeration<JarEntry> entries = jarFile.entries();
@@ -95,8 +110,9 @@ public class Main {
                             }
                             Deobfuscator d = deobfuscate(os.toByteArray());
                             if(d != null) {
-                                System.out.println("Deobfuscated class \"" + entry.getName().replaceAll(".class", "")
+                                logger.info("Deobfuscated class \"" + entry.getName().replaceAll(".class", "")
                                         + "\": " + d.getDeobfuscatedName());
+                                ++successes;
                                 d.setObfuscatedName(entry.getName().replaceAll(".class", ""));
                                 Byte[] bufferClone = new Byte[buffer.length];
                                 // Oh FFS, System#arraycopy
@@ -114,11 +130,13 @@ public class Main {
         } catch(IOException e) {
             e.printStackTrace();
         }
+        logger.info("Done! (" + successes + "/" + max + ")");
     }
 
     private Deobfuscator deobfuscate(byte[] classBytes) {
         for(Deobfuscator d : deobfuscators) {
             if(d.deobfuscate(classBytes)) {
+                // This is supposed to stay in here. Please don't remove it ;-;
                 //classDefs.add(d.getClassDefinition(classBytes));
                 deobfuscators.remove(d);
                 return d;
