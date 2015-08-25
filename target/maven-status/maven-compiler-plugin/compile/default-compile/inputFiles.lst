@@ -1,0 +1,17 @@
+/home/audrey/IdeaProjects/AutomaticMinecraftDeobfuscator/src/main/java/me/curlpipesh/mcdeobf/deobf/net/minecraft/entity/Entity.java
+/home/audrey/IdeaProjects/AutomaticMinecraftDeobfuscator/src/main/java/me/curlpipesh/mcdeobf/deobf/net/minecraft/util/ScaledResolution.java
+/home/audrey/IdeaProjects/AutomaticMinecraftDeobfuscator/src/main/java/me/curlpipesh/mcdeobf/deobf/ClassDef.java
+/home/audrey/IdeaProjects/AutomaticMinecraftDeobfuscator/src/main/java/me/curlpipesh/mcdeobf/deobf/net/minecraft/world/World.java
+/home/audrey/IdeaProjects/AutomaticMinecraftDeobfuscator/src/main/java/me/curlpipesh/mcdeobf/deobf/Deobfuscator.java
+/home/audrey/IdeaProjects/AutomaticMinecraftDeobfuscator/src/main/java/me/curlpipesh/mcdeobf/util/AccessHelper.java
+/home/audrey/IdeaProjects/AutomaticMinecraftDeobfuscator/src/main/java/me/curlpipesh/mcdeobf/deobf/net/minecraft/client/gui/FontRenderer.java
+/home/audrey/IdeaProjects/AutomaticMinecraftDeobfuscator/src/main/java/me/curlpipesh/mcdeobf/deobf/net/minecraft/client/Minecraft.java
+/home/audrey/IdeaProjects/AutomaticMinecraftDeobfuscator/src/main/java/me/curlpipesh/mcdeobf/deobf/net/minecraft/util/ChatComponentText.java
+/home/audrey/IdeaProjects/AutomaticMinecraftDeobfuscator/src/main/java/me/curlpipesh/mcdeobf/deobf/net/minecraft/client/renderer/EntityRenderer.java
+/home/audrey/IdeaProjects/AutomaticMinecraftDeobfuscator/src/main/java/me/curlpipesh/mcdeobf/deobf/net/minecraft/util/IChatComponent.java
+/home/audrey/IdeaProjects/AutomaticMinecraftDeobfuscator/src/main/java/me/curlpipesh/mcdeobf/Main.java
+/home/audrey/IdeaProjects/AutomaticMinecraftDeobfuscator/src/main/java/me/curlpipesh/mcdeobf/deobf/net/minecraft/world/AbstractWorld.java
+/home/audrey/IdeaProjects/AutomaticMinecraftDeobfuscator/src/main/java/me/curlpipesh/mcdeobf/deobf/net/minecraft/client/gui/GuiIngame.java
+/home/audrey/IdeaProjects/AutomaticMinecraftDeobfuscator/src/main/java/me/curlpipesh/mcdeobf/deobf/net/minecraft/client/GameSettings.java
+/home/audrey/IdeaProjects/AutomaticMinecraftDeobfuscator/src/main/java/me/curlpipesh/mcdeobf/deobf/net/minecraft/entity/EntityClientPlayer.java
+/home/audrey/IdeaProjects/AutomaticMinecraftDeobfuscator/src/main/java/me/curlpipesh/mcdeobf/deobf/net/minecraft/world/WorldProvider.java

@@ -13,8 +13,12 @@ import me.curlpipesh.mcdeobf.deobf.net.minecraft.client.renderer.EntityRenderer;
 import me.curlpipesh.mcdeobf.deobf.net.minecraft.entity.*;
 import me.curlpipesh.mcdeobf.deobf.net.minecraft.entity.player.EntityClientPlayer;
 import me.curlpipesh.mcdeobf.deobf.net.minecraft.entity.player.EntityPlayer;
+import me.curlpipesh.mcdeobf.deobf.net.minecraft.item.Item;
+import me.curlpipesh.mcdeobf.deobf.net.minecraft.item.ItemStack;
+import me.curlpipesh.mcdeobf.deobf.net.minecraft.network.NetClientPlayHandler;
 import me.curlpipesh.mcdeobf.deobf.net.minecraft.network.NetworkManager;
-import me.curlpipesh.mcdeobf.deobf.net.minecraft.network.packet.PacketClientChatMessage;
+import me.curlpipesh.mcdeobf.deobf.net.minecraft.network.packet.Packet;
+import me.curlpipesh.mcdeobf.deobf.net.minecraft.network.packet.client.PacketClientChatMessage;
 import me.curlpipesh.mcdeobf.deobf.net.minecraft.util.*;
 import me.curlpipesh.mcdeobf.deobf.net.minecraft.world.AbstractWorld;
 import me.curlpipesh.mcdeobf.deobf.net.minecraft.world.World;
@@ -70,7 +74,10 @@ public class Main {
                 new GuiChat(),
                 new GuiIngame(),
                 new GuiMainMenu(),
+                new GuiMultiplayer(),
+                new GuiOptions(),
                 new GuiScreen(),
+                new GuiSingleplayer(),
                 new EntityRenderer(),
                 new GameSettings(),
                 new Minecraft(),
@@ -81,7 +88,11 @@ public class Main {
                 new EntityLiving(),
                 new EntityLivingBase(),
                 new EntityMonster(),
+                new Item(),
+                new ItemStack(),
                 new PacketClientChatMessage(),
+                new Packet(),
+                new NetClientPlayHandler(),
                 new NetworkManager(),
                 new BlockPos(),
                 new ChatComponentText(),
@@ -165,6 +176,10 @@ public class Main {
             e.printStackTrace();
         }
         logger.info("Done! (" + successes + "/" + max + ")");
+        if(successes < max) {
+            logger.info("Had the following deobfuscators remaining: ");
+            deobfuscators.stream().forEach(d -> logger.info(d.getDeobfuscatedName()));
+        }
     }
 
     private Deobfuscator deobfuscate(byte[] classBytes) {
