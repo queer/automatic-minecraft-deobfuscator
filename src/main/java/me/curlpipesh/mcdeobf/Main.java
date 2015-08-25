@@ -15,6 +15,9 @@ import me.curlpipesh.mcdeobf.deobf.net.minecraft.entity.player.EntityClientPlaye
 import me.curlpipesh.mcdeobf.deobf.net.minecraft.entity.player.EntityPlayer;
 import me.curlpipesh.mcdeobf.deobf.net.minecraft.item.Item;
 import me.curlpipesh.mcdeobf.deobf.net.minecraft.item.ItemStack;
+import me.curlpipesh.mcdeobf.deobf.net.minecraft.item.inventory.InventoryPlayer;
+import me.curlpipesh.mcdeobf.deobf.net.minecraft.item.inventory.container.Container;
+import me.curlpipesh.mcdeobf.deobf.net.minecraft.item.nbt.*;
 import me.curlpipesh.mcdeobf.deobf.net.minecraft.network.NetClientPlayHandler;
 import me.curlpipesh.mcdeobf.deobf.net.minecraft.network.NetworkManager;
 import me.curlpipesh.mcdeobf.deobf.net.minecraft.network.packet.Packet;
@@ -83,11 +86,29 @@ public class Main {
                 new Minecraft(),
                 new EntityClientPlayer(),
                 new EntityPlayer(),
+                new DamageSource(),
                 new Entity(),
+                new EntityAgeable(),
                 new EntityAnimal(),
+                new EntityCreature(),
                 new EntityLiving(),
                 new EntityLivingBase(),
                 new EntityMonster(),
+                new Container(),
+                new InventoryPlayer(),
+                new NBTBase(),
+                new NBTTagByte(),
+                new NBTTagByteArray(),
+                new NBTTagCompound(),
+                new NBTTagDouble(),
+                new NBTTagEnd(),
+                new NBTTagFloat(),
+                new NBTTagInt(),
+                new NBTTagIntArray(),
+                new NBTTagList(),
+                new NBTTagLong(),
+                new NBTTagShort(),
+                new NBTTagString(),
                 new Item(),
                 new ItemStack(),
                 new PacketClientChatMessage(),
