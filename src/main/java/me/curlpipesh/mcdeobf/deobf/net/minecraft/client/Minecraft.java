@@ -26,7 +26,7 @@ public class Minecraft extends Deobfuscator {
     public ClassDef getClassDefinition(byte[] classData) {
         ClassReader cr = new ClassReader(classData);
         ClassNode cn = new ClassNode();
-        ClassDef c = new ClassDef(cn.name, getDeobfuscatedName());
+        ClassDef c = new ClassDef(this);
         cr.accept(cn, 0);
         for(MethodNode m : (List<MethodNode>) cn.methods) {
             if(m.exceptions.size() == 2) {
@@ -54,28 +54,28 @@ public class Minecraft extends Deobfuscator {
             }
         }
         for(FieldNode f : (List<FieldNode>) cn.fields) {
-            if(Main.getInstance().getDeobfuscators().stream()
-                    .filter(d -> d.getDeobfuscatedName().equals("World")).findFirst().get()
+            if(Main.getInstance().getDataToMap().entrySet().stream()
+                    .filter(d -> d.getKey().getDeobfuscatedName().equals("World")).findFirst().get().getKey()
                     .getObfuscatedDescription().equalsIgnoreCase(f.desc)) {
                 c.addField("theWorld", f.name);
             }
-            if(Main.getInstance().getDeobfuscators().stream()
-                    .filter(d -> d.getDeobfuscatedName().equals("EntityClientPlayer")).findFirst().get()
+            if(Main.getInstance().getDataToMap().entrySet().stream()
+                    .filter(d -> d.getKey().getDeobfuscatedName().equals("EntityClientPlayer")).findFirst().get().getKey()
                     .getObfuscatedDescription().equalsIgnoreCase(f.desc)) {
                 c.addField("thePlayer", f.name);
             }
-            if(Main.getInstance().getDeobfuscators().stream()
-                    .filter(d -> d.getDeobfuscatedName().equals("GameSettings")).findFirst().get()
+            if(Main.getInstance().getDataToMap().entrySet().stream()
+                    .filter(d -> d.getKey().getDeobfuscatedName().equals("GameSettings")).findFirst().get().getKey()
                     .getObfuscatedDescription().equalsIgnoreCase(f.desc)) {
                 c.addField("gameSettings", f.name);
             }
-            if(Main.getInstance().getDeobfuscators().stream()
-                    .filter(d -> d.getDeobfuscatedName().equals("FontRenderer")).findFirst().get()
+            if(Main.getInstance().getDataToMap().entrySet().stream()
+                    .filter(d -> d.getKey().getDeobfuscatedName().equals("FontRenderer")).findFirst().get().getKey()
                     .getObfuscatedDescription().equalsIgnoreCase(f.desc)) {
                 c.addField("fontRenderer", f.name);
             }
-            if(Main.getInstance().getDeobfuscators().stream()
-                    .filter(d -> d.getDeobfuscatedName().equals("EntityRenderer")).findFirst().get()
+            if(Main.getInstance().getDataToMap().entrySet().stream()
+                    .filter(d -> d.getKey().getDeobfuscatedName().equals("EntityRenderer")).findFirst().get().getKey()
                     .getObfuscatedDescription().equalsIgnoreCase(f.desc)) {
                 c.addField("entityRenderer", f.name);
             }

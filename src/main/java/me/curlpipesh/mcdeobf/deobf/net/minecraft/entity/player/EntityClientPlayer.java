@@ -34,7 +34,7 @@ public class EntityClientPlayer extends Deobfuscator {
         ClassNode cn = new ClassNode();
         cr.accept(cn, 0);
 
-        ClassDef c = new ClassDef(cn.name, getDeobfuscatedName());
+        ClassDef c = new ClassDef(this);
 
         // Reason for this is because it has 2 of the same method...
         boolean foundChatMessage = false;
@@ -63,7 +63,6 @@ public class EntityClientPlayer extends Deobfuscator {
                 if(lastMethodNode != null && !foundChatMessage && lastMethodNode.desc.equals(m.desc)
                         && m.desc.startsWith("(L") && m.desc.endsWith(";)V")) {
                     foundChatMessage = true;
-                    //System.out.println("Found addChatMessage: " + m.name + m.desc);
                     c.addMethod("addChatMessage", m.name);
                 }
 

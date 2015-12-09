@@ -5,6 +5,7 @@ import me.curlpipesh.mcdeobf.deobf.Deobfuscator;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldNode;
+import org.objectweb.asm.tree.MethodNode;
 
 import java.util.List;
 
@@ -44,7 +45,29 @@ public class Vec3i extends Deobfuscator {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public ClassDef getClassDefinition(byte[] classData) {
-        return null;
+        ClassReader cr = new ClassReader(classData);
+        ClassNode cn = new ClassNode();
+        cr.accept(cn, 0);
+
+        ClassDef def = new ClassDef(this);
+
+        int getters = 0;
+        for(MethodNode m : (List<MethodNode>) cn.methods) {
+            if(m.desc.contains("()I")) {
+                if(m.instructions.size() < 5) {
+                    if(getters == 0) {
+                        def.addMethod("getX", m.name);
+                    } else if(getters == 1) {
+                        def.addMethod("getY", m.name);
+                    } else if(getters == 2) {
+                        def.addMethod("getZ", m.name);
+                    }
+                    ++getters;
+                }
+            }
+        }
+        return def;
     }
 }

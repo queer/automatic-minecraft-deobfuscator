@@ -2,13 +2,14 @@ package me.curlpipesh.mcdeobf.deobf;
 
 import lombok.Data;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 /**
  * @author c
  * @since 8/3/15
  */
+@SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
 @Data
 public class ClassDef {
     private final String deobfuscatedName;
@@ -17,16 +18,16 @@ public class ClassDef {
      * List of deobfuscated fields. The key is the deobfuscated name, and the
      * value is the obfuscated name.
      */
-    private final Map<String, String> fields = new HashMap<>();
+    private final Map<String, String> fields = new LinkedHashMap<>();
     /**
      * List of deobfuscated methods. The key is the deobfuscated name, and the
      * value is the obfuscated name.
      */
-    private final Map<String, String> methods = new HashMap<>();
+    private final Map<String, String> methods = new LinkedHashMap<>();
 
-    public ClassDef(String dname, String oname) {
-        deobfuscatedName = dname;
-        obfuscatedName = oname;
+    public ClassDef(Deobfuscator d) {
+        deobfuscatedName = d.getDeobfuscatedName();
+        obfuscatedName = d.getObfuscatedName();
     }
 
     public void addField(String deobfuscatedName, String obfuscatedName) {

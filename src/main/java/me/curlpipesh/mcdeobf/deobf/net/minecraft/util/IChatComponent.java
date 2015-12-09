@@ -29,7 +29,7 @@ public class IChatComponent extends Deobfuscator {
         ClassNode cn = new ClassNode();
         cr.accept(cn, 0);
 
-        ClassDef c = new ClassDef(cn.name, getDeobfuscatedName());
+        ClassDef c = new ClassDef(this);
 
         return c;
     }

@@ -25,6 +25,6 @@ public class BlockEntityEnderChest extends Deobfuscator {
 
     @Override
     public ClassDef getClassDefinition(byte[] classData) {
-        return null;
+        return new ClassDef(this);
     }
 }

@@ -25,6 +25,6 @@ public class DamageSource extends Deobfuscator {
 
     @Override
     public ClassDef getClassDefinition(byte[] classData) {
-        return null;
+        return new ClassDef(this);
     }
 }

@@ -33,7 +33,7 @@ public class ChatComponentText extends Deobfuscator {
         ClassNode cn = new ClassNode();
         cr.accept(cn, 0);
 
-        ClassDef c = new ClassDef(cn.name, getDeobfuscatedName());
+        ClassDef c = new ClassDef(this);
 
         //Reason for this is because it has 2 of the same method...
         boolean foundGetText = false;

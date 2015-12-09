@@ -1,5 +1,6 @@
 package me.curlpipesh.mcdeobf.deobf.net.minecraft.util;
 
+import me.curlpipesh.mcdeobf.Main;
 import me.curlpipesh.mcdeobf.deobf.ClassDef;
 import me.curlpipesh.mcdeobf.deobf.Deobfuscator;
 import org.objectweb.asm.ClassReader;
@@ -7,6 +8,8 @@ import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldNode;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import static me.curlpipesh.mcdeobf.util.AccessHelper.*;
 
@@ -44,7 +47,22 @@ public class BlockPos extends Deobfuscator {
     }
 
     @Override
+    @SuppressWarnings({"unchecked", "Duplicates"})
     public ClassDef getClassDefinition(byte[] classData) {
-        return null;
+        ClassReader cr = new ClassReader(classData);
+        ClassNode cn = new ClassNode();
+        ClassDef def = new ClassDef(this);
+        cr.accept(cn, 0);
+
+        Optional<Map.Entry<Deobfuscator, Byte[]>> vec3i = Main.getInstance().getDataToMap().entrySet().stream()
+                .filter(d -> d.getKey().getDeobfuscatedName().equals("Vec3i")).findFirst();
+        if(!vec3i.isPresent()) {
+            Main.getInstance().getLogger().severe("[BlockPos] Couldn't find Vec3i, bailing out.");
+            return null;
+        }
+        ((List<FieldNode>) cn.fields).stream().filter(f -> f.desc.contains(vec3i.get().getKey().getObfuscatedDescription()))
+                .forEach(f -> def.addField("vecPos", f.name));
+
+        return def;
     }
 }

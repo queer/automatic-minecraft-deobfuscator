@@ -18,10 +18,12 @@ import me.curlpipesh.mcdeobf.deobf.net.minecraft.item.ItemStack;
 import me.curlpipesh.mcdeobf.deobf.net.minecraft.item.inventory.InventoryPlayer;
 import me.curlpipesh.mcdeobf.deobf.net.minecraft.item.inventory.container.Container;
 import me.curlpipesh.mcdeobf.deobf.net.minecraft.item.nbt.*;
+import me.curlpipesh.mcdeobf.deobf.net.minecraft.network.EnumConnectionState;
 import me.curlpipesh.mcdeobf.deobf.net.minecraft.network.NetClientPlayHandler;
 import me.curlpipesh.mcdeobf.deobf.net.minecraft.network.NetworkManager;
 import me.curlpipesh.mcdeobf.deobf.net.minecraft.network.packet.Packet;
 import me.curlpipesh.mcdeobf.deobf.net.minecraft.network.packet.client.PacketClientChatMessage;
+import me.curlpipesh.mcdeobf.deobf.net.minecraft.network.packet.client.PacketClientHandshake;
 import me.curlpipesh.mcdeobf.deobf.net.minecraft.util.*;
 import me.curlpipesh.mcdeobf.deobf.net.minecraft.world.AbstractWorld;
 import me.curlpipesh.mcdeobf.deobf.net.minecraft.world.World;
@@ -59,10 +61,11 @@ public class Main {
     @Getter
     private final Logger logger = Logger.getLogger("Deobfuscator");
 
+    @Getter
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
     private Map<Deobfuscator, Byte[]> dataToMap = new ConcurrentHashMap<>();
 
-    @SuppressWarnings( {"MismatchedQueryAndUpdateOfCollection", "FieldCanBeLocal"})
+    @SuppressWarnings({"MismatchedQueryAndUpdateOfCollection", "FieldCanBeLocal"})
     private final List<ClassDef> classDefs;
 
     private Main() {
@@ -90,6 +93,7 @@ public class Main {
                 new Entity(),
                 new EntityAgeable(),
                 new EntityAnimal(),
+                new EntityAttributes(),
                 new EntityCreature(),
                 new EntityLiving(),
                 new EntityLivingBase(),
@@ -112,13 +116,16 @@ public class Main {
                 new Item(),
                 new ItemStack(),
                 new PacketClientChatMessage(),
+                new PacketClientHandshake(),
                 new Packet(),
+                new EnumConnectionState(),
                 new NetClientPlayHandler(),
                 new NetworkManager(),
                 new BlockPos(),
                 new ChatComponentText(),
                 new IChatComponent(),
                 new ScaledResolution(),
+                new Session(),
                 new Vec3i(),
                 new AbstractWorld(),
                 new World(),
@@ -161,10 +168,7 @@ public class Main {
         try {
             JarFile jarFile = new JarFile(jar);
             Enumeration<JarEntry> entries = jarFile.entries();
-            while(entries.hasMoreElements()) {
-                if(deobfuscators.size() == 0) {
-                    break;
-                }
+            while(entries.hasMoreElements() || !deobfuscators.isEmpty()) {
                 JarEntry entry = entries.nextElement();
                 if(entry.getName().endsWith(".class")) {
                     try(InputStream is = jarFile.getInputStream(entry)) {
@@ -180,10 +184,11 @@ public class Main {
                                         + "\": " + d.getDeobfuscatedName());
                                 ++successes;
                                 d.setObfuscatedName(entry.getName().replaceAll(".class", ""));
-                                Byte[] bufferClone = new Byte[buffer.length];
+                                byte[] osClone = os.toByteArray();
+                                Byte[] bufferClone = new Byte[osClone.length];
                                 // Oh FFS, System#arraycopy
-                                for(int i = 0; i < buffer.length; i++) {
-                                    bufferClone[i] = buffer[i];
+                                for(int i = 0; i < osClone.length; i++) {
+                                    bufferClone[i] = osClone[i];
                                 }
                                 dataToMap.put(d, bufferClone);
                             }
@@ -200,6 +205,17 @@ public class Main {
         if(successes < max) {
             logger.info("Had the following deobfuscators remaining: ");
             deobfuscators.stream().forEach(d -> logger.info(d.getDeobfuscatedName()));
+        } else {
+            dataToMap.entrySet().stream().filter(e -> e.getKey().getDeobfuscatedName().equals("Entity"))
+                    .forEach(e -> {
+                        byte[] data = new byte[e.getValue().length];
+                        for(int i = 0; i < data.length; i++) {
+                            data[i] = e.getValue()[i];
+                        }
+                        System.out.println(e.getKey().getClassDefinition(data));
+                        e.getKey().getClassDefinition(data).getMethods().entrySet().stream()
+                                .forEach(f -> System.out.println("Entity> Method: " + f.getKey() + " (" + f.getValue() + ")"));
+                    });
         }
     }
 
