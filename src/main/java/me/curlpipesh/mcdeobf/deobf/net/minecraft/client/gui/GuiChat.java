@@ -63,6 +63,7 @@ public class GuiChat extends Deobfuscator {
 
     @Override
     public ClassDef getClassDefinition(byte[] classData) {
-        return null;
+        // TODO: IMPLEMENT THIS
+        return new ClassDef(this);
     }
 }

@@ -1,16 +1,10 @@
 package me.curlpipesh.mcdeobf.deobf.net.minecraft.item.inventory;
 
-import jdk.nashorn.internal.codegen.types.Type;
 import me.curlpipesh.mcdeobf.deobf.ClassDef;
 import me.curlpipesh.mcdeobf.deobf.Deobfuscator;
 import org.objectweb.asm.ClassReader;
-import org.objectweb.asm.tree.ClassNode;
-import org.objectweb.asm.tree.FieldNode;
-import org.objectweb.asm.tree.MethodNode;
 
 import java.util.List;
-
-import static me.curlpipesh.mcdeobf.util.AccessHelper.*;
 
 /**
  * @author audrey

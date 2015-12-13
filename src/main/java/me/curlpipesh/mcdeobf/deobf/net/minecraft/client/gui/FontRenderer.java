@@ -2,7 +2,11 @@ package me.curlpipesh.mcdeobf.deobf.net.minecraft.client.gui;
 
 import me.curlpipesh.mcdeobf.deobf.ClassDef;
 import me.curlpipesh.mcdeobf.deobf.Deobfuscator;
+import me.curlpipesh.mcdeobf.util.AccessHelper;
 import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.FieldNode;
+import org.objectweb.asm.tree.MethodNode;
 
 import java.util.List;
 
@@ -22,7 +26,27 @@ public class FontRenderer extends Deobfuscator {
     }
 
     @Override
+    @SuppressWarnings({"unchecked", "Convert2streamapi"})
     public ClassDef getClassDefinition(byte[] classData) {
-        return null;
+        ClassReader cr = new ClassReader(classData);
+        ClassNode cn = new ClassNode();
+        cr.accept(cn, 0);
+        ClassDef def = new ClassDef(this);
+
+        for(FieldNode f : (List<FieldNode>)cn.fields) {
+            if(f.desc.equals("I") && AccessHelper.isPublic(f.access)) {
+                def.addField("fontHeight", f.name);
+            }
+        }
+
+        for(MethodNode m : (List<MethodNode>)cn.methods) {
+            if(m.desc.equals("(Ljava/lang/String;)I") && AccessHelper.isPublic(m.access)) {
+                def.addMethod("getStringWidth", m.name);
+            } else if(m.desc.equals("(Ljava/lang/String;FFIZ)V") && AccessHelper.isPublic(m.access)) {
+                def.addMethod("drawString", m.name);
+            }
+        }
+
+        return def;
     }
 }

@@ -73,7 +73,9 @@ public class Entity extends Deobfuscator {
                 .filter(d -> d.getKey().getDeobfuscatedName().equals("EntityAttributes")).findFirst();
         if(!entityAttributes.isPresent()) {
             Main.getInstance().getLogger().severe("[Entity] Couldn't find EntityAttributes, bailing out.");
+            return null;
         }
+        //noinspection Convert2streamapi
         for(MethodNode m : (List<MethodNode>) cn.methods) {
             if(AccessHelper.isPublic(m.access)) {
                 // TODO: Find better way to do this...

@@ -24,6 +24,7 @@ public class GuiMainMenu extends Deobfuscator {
 
     @Override
     public ClassDef getClassDefinition(byte[] classData) {
-        return null;
+        // TODO: If fancy main menu is actually wanted, fill this in
+        return new ClassDef(this);
     }
 }

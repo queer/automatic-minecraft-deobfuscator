@@ -1,5 +1,6 @@
 package me.curlpipesh.mcdeobf.deobf.net.minecraft.entity.player;
 
+import me.curlpipesh.mcdeobf.Main;
 import me.curlpipesh.mcdeobf.deobf.ClassDef;
 import me.curlpipesh.mcdeobf.deobf.Deobfuscator;
 import org.objectweb.asm.ClassReader;
@@ -7,6 +8,8 @@ import org.objectweb.asm.tree.*;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import static me.curlpipesh.mcdeobf.util.AccessHelper.isPublic;
 import static me.curlpipesh.mcdeobf.util.AccessHelper.isVoid;
@@ -72,6 +75,18 @@ public class EntityClientPlayer extends Deobfuscator {
                 }
             }
         }
+
+        Optional<Map.Entry<Deobfuscator, Byte[]>> netClientPlayHandler = Main.getInstance().getDataToMap().entrySet().stream()
+                .filter(d -> d.getKey().getDeobfuscatedName().equals("NetClientPlayHandler")).findFirst();
+        if(!netClientPlayHandler.isPresent()) {
+            Main.getInstance().getLogger().severe("[EntityClientPlayer] Couldn't find NetClientPlayHandler, bailing out.");
+            return null;
+        }
+
+        ((List<FieldNode>) cn.fields).stream()
+                .filter(f -> f.desc.contains(netClientPlayHandler.get().getKey().getObfuscatedDescription()))
+                .forEach(f -> c.addField("netClientPlayHandler", f.name));
+
         return c;
     }
 }

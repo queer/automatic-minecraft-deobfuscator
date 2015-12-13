@@ -13,6 +13,7 @@ import me.curlpipesh.mcdeobf.deobf.net.minecraft.client.renderer.EntityRenderer;
 import me.curlpipesh.mcdeobf.deobf.net.minecraft.entity.*;
 import me.curlpipesh.mcdeobf.deobf.net.minecraft.entity.player.EntityClientPlayer;
 import me.curlpipesh.mcdeobf.deobf.net.minecraft.entity.player.EntityPlayer;
+import me.curlpipesh.mcdeobf.deobf.net.minecraft.entity.player.EntityPlayerMP;
 import me.curlpipesh.mcdeobf.deobf.net.minecraft.item.Item;
 import me.curlpipesh.mcdeobf.deobf.net.minecraft.item.ItemStack;
 import me.curlpipesh.mcdeobf.deobf.net.minecraft.item.inventory.InventoryPlayer;
@@ -89,6 +90,7 @@ public class Main {
                 new Minecraft(),
                 new EntityClientPlayer(),
                 new EntityPlayer(),
+                new EntityPlayerMP(),
                 new DamageSource(),
                 new Entity(),
                 new EntityAgeable(),
@@ -206,17 +208,16 @@ public class Main {
             logger.info("Had the following deobfuscators remaining: ");
             deobfuscators.stream().forEach(d -> logger.info(d.getDeobfuscatedName()));
         } else {
-            dataToMap.entrySet().stream().filter(e -> e.getKey().getDeobfuscatedName().equals("Entity"))
+            dataToMap.entrySet().stream().filter(e -> e.getKey().getDeobfuscatedName().equals("GameSettings"))
                     .forEach(e -> {
                         byte[] data = new byte[e.getValue().length];
                         for(int i = 0; i < data.length; i++) {
                             data[i] = e.getValue()[i];
                         }
                         System.out.println(e.getKey().getClassDefinition(data));
-                        e.getKey().getClassDefinition(data).getMethods().entrySet().stream()
-                                .forEach(f -> System.out.println("Entity> Method: " + f.getKey() + " (" + f.getValue() + ")"));
                     });
         }
+        // TODO: Generate actual usable mappings
     }
 
     private Deobfuscator deobfuscate(byte[] classBytes) {
