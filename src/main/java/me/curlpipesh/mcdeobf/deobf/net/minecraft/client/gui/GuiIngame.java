@@ -34,7 +34,7 @@ public class GuiIngame extends Deobfuscator {
 
         for(MethodNode m : (List<MethodNode>)cn.methods) {
             if(m.desc.equals("(F)V") && AccessHelper.isPublic(m.access)) {
-                def.addMethod("renderGameOverlay", m.name);
+                def.addMethod("renderGameOverlay", m);
                 break;
             }
         }

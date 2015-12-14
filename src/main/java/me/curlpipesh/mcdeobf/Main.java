@@ -208,14 +208,21 @@ public class Main {
             logger.info("Had the following deobfuscators remaining: ");
             deobfuscators.stream().forEach(d -> logger.info(d.getDeobfuscatedName()));
         } else {
-            dataToMap.entrySet().stream().filter(e -> e.getKey().getDeobfuscatedName().equals("GameSettings"))
+            logger.info("start");
+            dataToMap.entrySet().stream().filter(e -> e.getKey().getDeobfuscatedName().equals("GuiScreen"))
                     .forEach(e -> {
                         byte[] data = new byte[e.getValue().length];
                         for(int i = 0; i < data.length; i++) {
                             data[i] = e.getValue()[i];
                         }
-                        System.out.println(e.getKey().getClassDefinition(data));
+                        //System.out.println(e.getKey().getClassDefinition(data));
+                        ClassDef def = e.getKey().getClassDefinition(data);
+                        logger.info(def.toString());
+                        for(ClassDef.MethodDef m : def.getMethods()) {
+                            logger.info(m.toString());
+                        }
                     });
+            logger.info("end");
         }
         // TODO: Generate actual usable mappings
     }

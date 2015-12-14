@@ -58,11 +58,11 @@ public class Vec3i extends Deobfuscator {
             if(m.desc.contains("()I")) {
                 if(m.instructions.size() < 5) {
                     if(getters == 0) {
-                        def.addMethod("getX", m.name);
+                        def.addMethod("getX", m);
                     } else if(getters == 1) {
-                        def.addMethod("getY", m.name);
+                        def.addMethod("getY", m);
                     } else if(getters == 2) {
-                        def.addMethod("getZ", m.name);
+                        def.addMethod("getZ", m);
                     }
                     ++getters;
                 }

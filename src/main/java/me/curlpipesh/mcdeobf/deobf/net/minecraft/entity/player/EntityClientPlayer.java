@@ -53,7 +53,7 @@ public class EntityClientPlayer extends Deobfuscator {
                         final Object ldc = ((LdcInsnNode) node).cst;
                         if(ldc instanceof Double) {
                             if((Double) ldc == -999.0) {
-                                c.addMethod("onMotionUpdate", m.name);
+                                c.addMethod("onMotionUpdate", m);
                                 break;
                             }
                         }
@@ -66,12 +66,12 @@ public class EntityClientPlayer extends Deobfuscator {
                 if(lastMethodNode != null && !foundChatMessage && lastMethodNode.desc.equals(m.desc)
                         && m.desc.startsWith("(L") && m.desc.endsWith(";)V")) {
                     foundChatMessage = true;
-                    c.addMethod("addChatMessage", m.name);
+                    c.addMethod("addChatMessage", m);
                 }
 
                 if(secondLastNode != null && secondLastNode.name.equals("<init>")
                         && secondLastNode.desc.equals("(Ljava/lang/String;)V") && secondLastNode.desc.equals(m.desc)) {
-                    c.addMethod("sendChatMessage", m.name);
+                    c.addMethod("sendChatMessage", m);
                 }
             }
         }

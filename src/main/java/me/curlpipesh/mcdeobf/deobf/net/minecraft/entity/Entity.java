@@ -80,7 +80,7 @@ public class Entity extends Deobfuscator {
             if(AccessHelper.isPublic(m.access)) {
                 // TODO: Find better way to do this...
                 if(m.name.equals("az")) {
-                    def.addMethod("isSneaking", m.name);
+                    def.addMethod("isSneaking", m);
                 }
             }
         }

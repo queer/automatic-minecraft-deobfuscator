@@ -44,7 +44,7 @@ public class EntityRenderer extends Deobfuscator {
 
         for(MethodNode m : (List<MethodNode>)cn.methods) {
             if(m.desc.equals("(IFJ)V") && AccessHelper.isPrivate(m.access)) {
-                def.addMethod("doWorldRender", m.name);
+                def.addMethod("doWorldRender", m);
             } else if(m.desc.equals("(F)V") && AccessHelper.isPrivate(m.access)) {
                 boolean hasInstanceof = false;
                 boolean dealsWithPlayer = false;
@@ -62,7 +62,7 @@ public class EntityRenderer extends Deobfuscator {
                     }
                 }
                 if(hasInstanceof && dealsWithPlayer) {
-                    def.addMethod("applyViewBobbing", m.name);
+                    def.addMethod("applyViewBobbing", m);
                 }
             } else if(m.desc.equals("()V") && AccessHelper.isPublic(m.access)) {
                 int count3553 = 0;
@@ -78,8 +78,8 @@ public class EntityRenderer extends Deobfuscator {
                     }
                 }
                 if(count3553 == 4) {
-                    def.addMethod("enableLightmap", m.name);
-                    def.addMethod("disableLightmap", ((List<MethodNode>)cn.methods).get(cn.methods.indexOf(m) - 1).name);
+                    def.addMethod("enableLightmap", m);
+                    def.addMethod("disableLightmap", ((List<MethodNode>)cn.methods).get(cn.methods.indexOf(m) - 1));
                 }
             }
         }

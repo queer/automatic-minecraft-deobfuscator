@@ -41,9 +41,9 @@ public class FontRenderer extends Deobfuscator {
 
         for(MethodNode m : (List<MethodNode>)cn.methods) {
             if(m.desc.equals("(Ljava/lang/String;)I") && AccessHelper.isPublic(m.access)) {
-                def.addMethod("getStringWidth", m.name);
+                def.addMethod("getStringWidth", m);
             } else if(m.desc.equals("(Ljava/lang/String;FFIZ)V") && AccessHelper.isPublic(m.access)) {
-                def.addMethod("drawString", m.name);
+                def.addMethod("drawString", m);
             }
         }
 

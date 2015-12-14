@@ -31,7 +31,7 @@ public class Minecraft extends Deobfuscator {
         for(MethodNode m : (List<MethodNode>) cn.methods) {
             if(m.exceptions.size() == 2) {
                 if(m.exceptions.contains("LWJGLException") && m.exceptions.contains("IOException")) {
-                    c.addMethod("startGame", m.name);
+                    c.addMethod("startGame", m);
                     continue;
                 }
             }
@@ -42,7 +42,7 @@ public class Minecraft extends Deobfuscator {
                     if(node instanceof LdcInsnNode) {
                         if(((LdcInsnNode) node).cst instanceof String) {
                             if(((String) ((LdcInsnNode) node).cst).equalsIgnoreCase("Manually triggered debug crash")) {
-                                c.addMethod("runGame", m.name);
+                                c.addMethod("runGame", m);
                                 break;
                             }
                         }
@@ -50,7 +50,7 @@ public class Minecraft extends Deobfuscator {
                 }
             }
             if(isPublic(m.access) && isStatic(m.access) && m.desc.equals("()L" + cn.name + ";")) {
-                c.addMethod("getMinecraft", m.name);
+                c.addMethod("getMinecraft", m);
             }
         }
         for(FieldNode f : (List<FieldNode>) cn.fields) {

@@ -48,7 +48,7 @@ public class ChatComponentText extends Deobfuscator {
                         if(fn.desc.equals("Ljava/lang/String;") && m.desc.equals("()Ljava/lang/String;") &&
                                 !foundGetText && m.instructions.size() < 10){
                             foundGetText = true;
-                            c.addMethod("getUnformattedText", m.name);
+                            c.addMethod("getUnformattedText", m);
                         }
                     }
                 }
