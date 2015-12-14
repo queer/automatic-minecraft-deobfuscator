@@ -3,6 +3,7 @@ package me.curlpipesh.mcdeobf.deobf.net.minecraft.client;
 import me.curlpipesh.mcdeobf.Main;
 import me.curlpipesh.mcdeobf.deobf.ClassDef;
 import me.curlpipesh.mcdeobf.deobf.Deobfuscator;
+import me.curlpipesh.mcdeobf.util.AccessHelper;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.tree.*;
 
@@ -28,14 +29,17 @@ public class Minecraft extends Deobfuscator {
         ClassNode cn = new ClassNode();
         ClassDef c = new ClassDef(this);
         cr.accept(cn, 0);
+        String guiScreen = Main.getInstance().getDataToMap().entrySet().stream()
+                .filter(d -> d.getKey().getDeobfuscatedName().equals("GuiScreen")).findFirst().get().getKey()
+                .getObfuscatedDescription();
+        int intCounter = 0;
+
         for(MethodNode m : (List<MethodNode>) cn.methods) {
             if(m.exceptions.size() == 2) {
                 if(m.exceptions.contains("LWJGLException") && m.exceptions.contains("IOException")) {
                     c.addMethod("startGame", m);
-                    continue;
                 }
-            }
-            if(isPublic(m.access) && isVoid(m.desc)) {
+            } else if(isPublic(m.access) && isVoid(m.desc)) {
                 Iterator<AbstractInsnNode> i = m.instructions.iterator();
                 while(i.hasNext()) {
                     AbstractInsnNode node = i.next();
@@ -48,11 +52,14 @@ public class Minecraft extends Deobfuscator {
                         }
                     }
                 }
-            }
-            if(isPublic(m.access) && isStatic(m.access) && m.desc.equals("()L" + cn.name + ";")) {
+            } else if(isPublic(m.access) && isStatic(m.access) && m.desc.equals("()L" + cn.name + ";")) {
                 c.addMethod("getMinecraft", m);
+            } else if(m.desc.equals("(" + guiScreen + ")V")) {
+                c.addMethod("displayGuiScreen", m);
             }
         }
+
+        // TODO: Refactor this to be less hideously inefficient
         for(FieldNode f : (List<FieldNode>) cn.fields) {
             if(Main.getInstance().getDataToMap().entrySet().stream()
                     .filter(d -> d.getKey().getDeobfuscatedName().equals("World")).findFirst().get().getKey()
@@ -79,7 +86,27 @@ public class Minecraft extends Deobfuscator {
                     .getObfuscatedDescription().equalsIgnoreCase(f.desc)) {
                 c.addField("entityRenderer", f.name);
             }
+            if(Main.getInstance().getDataToMap().entrySet().stream()
+                    .filter(d -> d.getKey().getDeobfuscatedName().equals("GuiScreen")).findFirst().get().getKey()
+                    .getObfuscatedDescription().equalsIgnoreCase(f.desc)) {
+                c.addField("currentScreen", f.name);
+            }
+            if(Main.getInstance().getDataToMap().entrySet().stream()
+                    .filter(d -> d.getKey().getDeobfuscatedName().equals("Session")).findFirst().get().getKey()
+                    .getObfuscatedDescription().equalsIgnoreCase(f.desc)) {
+                c.addField("session", f.name);
+            }
+            if(f.desc.contains("Ljava/io/File;") && AccessHelper.isPublic(f.access)) {
+                c.addField("mcDataDir", f.name);
+            } else if(f.desc.equals("I") && intCounter < 2) {
+                if(intCounter == 0) {
+                    c.addField("width", f.name);
+                } else {
+                    c.addField("height", f.name);
+                }
+                ++intCounter;
+            }
         }
-        return null;
+        return c;
     }
 }

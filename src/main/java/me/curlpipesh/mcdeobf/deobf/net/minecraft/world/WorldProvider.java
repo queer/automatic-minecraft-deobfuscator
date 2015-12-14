@@ -2,6 +2,7 @@ package me.curlpipesh.mcdeobf.deobf.net.minecraft.world;
 
 import me.curlpipesh.mcdeobf.deobf.ClassDef;
 import me.curlpipesh.mcdeobf.deobf.Deobfuscator;
+import me.curlpipesh.mcdeobf.util.AccessHelper;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.FieldNode;
@@ -40,7 +41,19 @@ public class WorldProvider extends Deobfuscator {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public ClassDef getClassDefinition(byte[] classData) {
-        return null;
+        ClassReader cr = new ClassReader(classData);
+        ClassNode cn = new ClassNode();
+        ClassDef c = new ClassDef(this);
+        cr.accept(cn, 0);
+
+        for(FieldNode f : (List<FieldNode>) cn.fields) {
+            if(AccessHelper.isProtected(f.access) && f.desc.equals("[F")) {
+                c.addField("lightBrightnessTable", f.name);
+            }
+        }
+
+        return c;
     }
 }

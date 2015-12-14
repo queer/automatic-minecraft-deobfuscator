@@ -48,7 +48,15 @@ public class ScaledResolution extends Deobfuscator {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public ClassDef getClassDefinition(byte[] classData) {
-        return null;
+        ClassReader cr = new ClassReader(classData);
+        ClassNode cn = new ClassNode();
+        ClassDef c = new ClassDef(this);
+        cr.accept(cn, 0);
+
+        c.addMethod("getScale", ((List<MethodNode>) cn.methods).get(cn.methods.size() - 1));
+
+        return c;
     }
 }

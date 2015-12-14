@@ -30,7 +30,16 @@ public class PacketClientHandshake extends Deobfuscator {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public ClassDef getClassDefinition(final byte[] classData) {
-        return null;
+        ClassReader cr = new ClassReader(classData);
+        ClassNode cn = new ClassNode();
+        ClassDef c = new ClassDef(this);
+        cr.accept(cn, 0);
+
+        c.addField("hostname", ((List<FieldNode>) cn.fields).get(1).name);
+        c.addField("port", ((List<FieldNode>) cn.fields).get(2).name);
+
+        return c;
     }
 }

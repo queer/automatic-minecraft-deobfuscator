@@ -209,7 +209,7 @@ public class Main {
             deobfuscators.stream().forEach(d -> logger.info(d.getDeobfuscatedName()));
         } else {
             logger.info("start");
-            dataToMap.entrySet().stream().filter(e -> e.getKey().getDeobfuscatedName().equals("GuiScreen"))
+            dataToMap.entrySet().stream().filter(e -> e.getKey().getDeobfuscatedName().equals("NetClientPlayHandler"))
                     .forEach(e -> {
                         byte[] data = new byte[e.getValue().length];
                         for(int i = 0; i < data.length; i++) {
