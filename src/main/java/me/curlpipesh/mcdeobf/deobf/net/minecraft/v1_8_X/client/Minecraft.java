@@ -12,6 +12,7 @@ import java.util.List;
 
 import static me.curlpipesh.mcdeobf.util.AccessHelper.*;
 
+@SuppressWarnings("Duplicates")
 public class Minecraft extends Deobfuscator {
     public Minecraft() {
         super("Minecraft");
@@ -35,9 +36,18 @@ public class Minecraft extends Deobfuscator {
         int intCounter = 0;
 
         for(MethodNode m : (List<MethodNode>) cn.methods) {
-            if(m.exceptions.size() == 2) {
-                if(m.exceptions.contains("LWJGLException") && m.exceptions.contains("IOException")) {
-                    c.addMethod("startGame", m);
+            if(isPrivate(m.access) && m.desc.equals("()V")) {
+                Iterator<AbstractInsnNode> i = m.instructions.iterator();
+                while(i.hasNext()) {
+                    AbstractInsnNode node = i.next();
+                    if(node instanceof LdcInsnNode) {
+                        if(((LdcInsnNode) node).cst instanceof String) {
+                            if(((String) ((LdcInsnNode) node).cst).equalsIgnoreCase("LWJGL Version: ")) {
+                                c.addMethod("startGame", m);
+                                break;
+                            }
+                        }
+                    }
                 }
             } else if(isPublic(m.access) && isVoid(m.desc)) {
                 Iterator<AbstractInsnNode> i = m.instructions.iterator();
@@ -54,7 +64,7 @@ public class Minecraft extends Deobfuscator {
                 }
             } else if(isPublic(m.access) && isStatic(m.access) && m.desc.equals("()L" + cn.name + ";")) {
                 c.addMethod("getMinecraft", m);
-            } else if(m.desc.equals("(" + guiScreen + ")V")) {
+            } else if(m.desc.contains("(" + guiScreen + ")V")) {
                 c.addMethod("displayGuiScreen", m);
             }
         }

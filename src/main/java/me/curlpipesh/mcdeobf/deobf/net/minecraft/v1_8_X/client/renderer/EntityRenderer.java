@@ -42,7 +42,7 @@ public class EntityRenderer extends Deobfuscator {
             return null;
         }
 
-        for(MethodNode m : (List<MethodNode>)cn.methods) {
+        for(MethodNode m : (List<MethodNode>) cn.methods) {
             if(m.desc.equals("(IFJ)V") && AccessHelper.isPrivate(m.access)) {
                 def.addMethod("doWorldRender", m);
             } else if(m.desc.equals("(F)V") && AccessHelper.isPrivate(m.access)) {
@@ -55,7 +55,7 @@ public class EntityRenderer extends Deobfuscator {
                         if(a.getOpcode() == Opcodes.INSTANCEOF) {
                             hasInstanceof = true;
                         } else if(a.getOpcode() == Opcodes.CHECKCAST) {
-                            if(((TypeInsnNode)a).desc.contains(entityPlayer.get().getKey().getObfuscatedDescription())) {
+                            if(((TypeInsnNode) a).desc.contains(entityPlayer.get().getKey().getObfuscatedName())) {
                                 dealsWithPlayer = true;
                             }
                         }
@@ -69,17 +69,15 @@ public class EntityRenderer extends Deobfuscator {
                 Iterator<AbstractInsnNode> i = m.instructions.iterator();
                 while(i.hasNext()) {
                     AbstractInsnNode a = i.next();
-                    if(a instanceof LdcInsnNode) {
-                        if(((LdcInsnNode) a).cst instanceof Integer) {
-                            if(((Integer) ((LdcInsnNode) a).cst) == 3553) {
-                                ++count3553;
-                            }
+                    if(a instanceof IntInsnNode) {
+                        if(((IntInsnNode) a).operand == 3553) {
+                            ++count3553;
                         }
                     }
                 }
                 if(count3553 == 4) {
                     def.addMethod("enableLightmap", m);
-                    def.addMethod("disableLightmap", ((List<MethodNode>)cn.methods).get(cn.methods.indexOf(m) - 1));
+                    def.addMethod("disableLightmap", ((List<MethodNode>) cn.methods).get(cn.methods.indexOf(m) - 1));
                 }
             }
         }
