@@ -129,7 +129,7 @@ public class Main {
         }
     }
 
-    private void generateMappings(){
+    private void generateMappings() {
         List<ClassMap> classMaps = new ArrayList<>();
 
         dataToMap.forEach((deobf, bytes) -> {
@@ -148,14 +148,15 @@ public class Main {
         try {
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
-            //gson.toJson(classMaps, new FileWriter("mappings.json");
-            //does not end the Json file correctly for some reason, so we write the file later below
+            // gson.toJson(classMaps, new FileWriter("mappings.json");
+            // does not end the Json file correctly for some reason, so we write the file later below
 
             String json = gson.toJson(classMaps);
 
             File file = new File("mapping.json");
 
             if(file.exists()) {
+                //noinspection ResultOfMethodCallIgnored
                 file.delete();
                 logger.warning("An older mappings.json was found, deleting it");
             }
@@ -164,7 +165,7 @@ public class Main {
             fileWriter.write(json);
             fileWriter.close();
             logger.info("The Json mappings have been generated");
-        }catch (Exception e){
+        } catch(Exception e) {
             e.printStackTrace();
         }
     }
