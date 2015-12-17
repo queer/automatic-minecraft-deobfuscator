@@ -17,6 +17,7 @@ import me.curlpipesh.mcdeobf.deobf.net.minecraft.v1_8_X.item.nbt.*;
 import me.curlpipesh.mcdeobf.deobf.net.minecraft.v1_8_X.network.*;
 import me.curlpipesh.mcdeobf.deobf.net.minecraft.v1_8_X.network.packet.*;
 import me.curlpipesh.mcdeobf.deobf.net.minecraft.v1_8_X.network.packet.client.*;
+import me.curlpipesh.mcdeobf.deobf.net.minecraft.v1_8_X.network.packet.server.PacketServerChatMessage;
 import me.curlpipesh.mcdeobf.deobf.net.minecraft.v1_8_X.util.*;
 import me.curlpipesh.mcdeobf.deobf.net.minecraft.v1_8_X.world.*;
 
@@ -30,7 +31,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public class Version1_8_X implements Version {
     @Getter
-    @SuppressWarnings("SpellCheckingInspection")
+    @SuppressWarnings({"SpellCheckingInspection", "MismatchedQueryAndUpdateOfCollection"})
     private final List<Deobfuscator> deobfuscators;
 
     public Version1_8_X() {
@@ -81,7 +82,9 @@ public class Version1_8_X implements Version {
                 new ItemStack(),
                 new PacketClientChatMessage(),
                 new PacketClientHandshake(),
+                new PacketServerChatMessage(),
                 new Packet(),
+                new PacketBuffer(),
                 new EnumConnectionState(),
                 new NetClientPlayHandler(),
                 new NetworkManager(),

@@ -42,6 +42,11 @@ public class NetworkManager extends Deobfuscator {
                     .findFirst().get().getKey().getObfuscatedDescription() + ")V")) {
                 c.addMethod("sendPacket", m);
             }
+            if(AccessHelper.isProtected(m.access) && m.desc.contains(Main.getInstance().getDataToMap().entrySet()
+                    .stream().filter(d -> d.getKey().getDeobfuscatedName().equals("Packet"))
+                    .findFirst().get().getKey().getObfuscatedName()) && m.desc.contains("ChannelHandlerContext")) {
+                c.addMethod("channelRead0", m);
+            }
         }
 
         return c;

@@ -43,7 +43,7 @@ public class ClassDef {
     public void addMethod(String deobfuscatedName, MethodNode m) {
         //methods.put(deobfuscatedName, obfuscatedName);
         if(methods.stream().filter(d -> d.deobfName.equals(deobfuscatedName) && d.desc.equals(m.desc)).count() > 0) {
-            Main.getInstance().getLogger().warning("Ignoring duplicated method definition for" + deobfuscatedName + ": " + m.name + m.desc);
+            Main.getInstance().getLogger().warning("Ignoring duplicated method definition for " + deobfuscatedName + ": " + m.name + m.desc);
             return;
         }
         methods.add(new MethodDef(m.name, deobfuscatedName, m.desc));
