@@ -9,10 +9,7 @@ import me.curlpipesh.mcdeobf.deobf.Version;
 import me.curlpipesh.mcdeobf.deobf.versions.Version1_8_X;
 import me.curlpipesh.mcdeobf.json.ClassMap;
 
-import java.io.ByteArrayOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
@@ -150,7 +147,19 @@ public class Main {
 
         try {
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            gson.toJson(classMaps, new FileWriter("mappings.json"));
+
+            String json = gson.toJson(classMaps);
+
+            File file = new File("mapping.json");
+
+            if(file.exists()) {
+                file.delete();
+                logger.warning("An older mappings.json was found, deleting it");
+            }
+
+            FileWriter fileWriter = new FileWriter(file);
+            fileWriter.write(json);
+            fileWriter.close();
             logger.info("The Json mappings have been generated");
         }catch (Exception e){
             e.printStackTrace();
