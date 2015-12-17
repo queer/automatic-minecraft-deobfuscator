@@ -1,14 +1,19 @@
 package me.curlpipesh.mcdeobf;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import lombok.Getter;
 import me.curlpipesh.mcdeobf.deobf.ClassDef;
 import me.curlpipesh.mcdeobf.deobf.Deobfuscator;
 import me.curlpipesh.mcdeobf.deobf.Version;
 import me.curlpipesh.mcdeobf.deobf.versions.Version1_8_X;
+import me.curlpipesh.mcdeobf.json.ClassMap;
 
 import java.io.ByteArrayOutputStream;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Map;
@@ -122,8 +127,42 @@ public class Main {
         } else if(successes > max) {
             logger.severe("Somehow had more successes than possible!?");
         } else {
-            // TODO: Generate actual usable mappings
+            logger.info("Generating JSON Mappings...");
+            generateMappings();
         }
+    }
+
+    private void generateMappings(){
+        List<ClassMap> classMaps = new ArrayList<>();
+
+        dataToMap.forEach((deobf, bytes) -> {
+            ClassDef classDef = deobf.getClassDefinition(moveBytes(bytes));
+
+            Map<String, String> fields = classDef == null ? null : classDef.getFields();
+            List<ClassDef.MethodDef> methods = classDef == null ? null : classDef.getMethods();
+
+            ClassMap classMap = new ClassMap(
+                    deobf.getDeobfuscatedName(), deobf.getObfuscatedName(), deobf.getObfuscatedDescription(),
+                    fields, methods);
+
+            classMaps.add(classMap);
+        });
+
+        try {
+            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            gson.toJson(classMaps, new FileWriter("mappings.json"));
+            logger.info("The Json mappings have been generated");
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+
+    private byte[] moveBytes(Byte[] bytes) {
+        byte[] newBytes = new byte[bytes.length];
+        for(int i = 0; i < bytes.length; i++) {
+            newBytes[i] = bytes[i];
+        }
+        return newBytes;
     }
 
     private Deobfuscator deobfuscate(byte[] classBytes) {
