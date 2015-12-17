@@ -148,6 +148,9 @@ public class Main {
         try {
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
+            //gson.toJson(classMaps, new FileWriter("mappings.json");
+            //does not end the Json file correctly for some reason, so we write the file later below
+
             String json = gson.toJson(classMaps);
 
             File file = new File("mapping.json");
