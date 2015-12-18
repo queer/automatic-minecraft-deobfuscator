@@ -56,7 +56,7 @@ public class Vec3i extends Deobfuscator {
         int getters = 0;
         for(MethodNode m : (List<MethodNode>) cn.methods) {
             if(m.desc.contains("()I")) {
-                if(m.instructions.size() < 5) {
+                if(!m.name.equals("hashCode")) {
                     if(getters == 0) {
                         def.addMethod("getX", m);
                     } else if(getters == 1) {

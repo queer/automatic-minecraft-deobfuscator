@@ -37,13 +37,17 @@ public class ClassDef {
     }
 
     public void addField(String deobfuscatedName, String obfuscatedName) {
+        if(fields.containsKey(deobfuscatedName)) {
+            Main.getInstance().getLogger().warning("[" + this.deobfuscatedName + "] Ignoring duplicate field def for '" + deobfuscatedName + "'");
+            return;
+        }
         fields.put(deobfuscatedName, obfuscatedName);
     }
 
     public void addMethod(String deobfuscatedName, MethodNode m) {
         //methods.put(deobfuscatedName, obfuscatedName);
         if(methods.stream().filter(d -> d.deobfName.equals(deobfuscatedName) && d.desc.equals(m.desc)).count() > 0) {
-            Main.getInstance().getLogger().warning("Ignoring duplicated method definition for " + deobfuscatedName + ": " + m.name + m.desc);
+            Main.getInstance().getLogger().warning("[" + this.deobfuscatedName + "] Ignoring duplicated method definition for " + deobfuscatedName + ": " + m.name + m.desc);
             return;
         }
         methods.add(new MethodDef(m.name, deobfuscatedName, m.desc));

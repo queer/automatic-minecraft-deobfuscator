@@ -39,7 +39,7 @@ public class EntityPlayer extends Deobfuscator {
         Optional<Map.Entry<Deobfuscator, Byte[]>> container = Main.getInstance().getDataToMap().entrySet().stream()
                 .filter(d -> d.getKey().getDeobfuscatedName().equals("Container")).findFirst();
         Optional<Map.Entry<Deobfuscator, Byte[]>> inventoryPlayer = Main.getInstance().getDataToMap().entrySet().stream()
-                .filter(d -> d.getKey().getDeobfuscatedName().equals("Container")).findFirst();
+                .filter(d -> d.getKey().getDeobfuscatedName().equals("InventoryPlayer")).findFirst();
         if(!container.isPresent()) {
             Main.getInstance().getLogger().severe("[EntityPlayer] Couldn't find Container, bailing out.");
             return null;

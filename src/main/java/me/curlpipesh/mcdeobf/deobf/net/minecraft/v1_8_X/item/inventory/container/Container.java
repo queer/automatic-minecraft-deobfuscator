@@ -1,11 +1,15 @@
 package me.curlpipesh.mcdeobf.deobf.net.minecraft.v1_8_X.item.inventory.container;
 
+import me.curlpipesh.mcdeobf.Main;
 import me.curlpipesh.mcdeobf.deobf.ClassDef;
 import me.curlpipesh.mcdeobf.deobf.Deobfuscator;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.MethodNode;
 
-import static me.curlpipesh.mcdeobf.util.AccessHelper.*;
+import java.util.List;
+
+import static me.curlpipesh.mcdeobf.util.AccessHelper.isAbstract;
 
 /**
  * @author audrey
@@ -26,7 +30,23 @@ public class Container extends Deobfuscator {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public ClassDef getClassDefinition(byte[] classData) {
-        return new ClassDef(this);
+        ClassDef def = new ClassDef(this);
+        ClassReader cr = new ClassReader(classData);
+        ClassNode cn = new ClassNode();
+        cr.accept(cn, 0);
+        String player = Main.getInstance().getDataToMap().entrySet().stream()
+                .filter(d -> d.getKey().getDeobfuscatedName().equals("EntityPlayer")).findFirst().get().getKey()
+                .getObfuscatedDescription();
+        String itemStack = Main.getInstance().getDataToMap().entrySet().stream()
+                .filter(d -> d.getKey().getDeobfuscatedName().equals("ItemStack")).findFirst().get().getKey()
+                .getObfuscatedDescription();
+        for(MethodNode m : (List<MethodNode>) cn.methods) {
+            if(m.desc.contains("I)") && m.desc.contains(player) && m.desc.contains(itemStack)) {
+                def.addMethod("getStackInSlot", m);
+            }
+        }
+        return def;
     }
 }

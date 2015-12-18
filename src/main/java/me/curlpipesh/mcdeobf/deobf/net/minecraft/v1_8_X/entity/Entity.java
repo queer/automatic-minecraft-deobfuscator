@@ -79,8 +79,11 @@ public class Entity extends Deobfuscator {
         for(MethodNode m : (List<MethodNode>) cn.methods) {
             if(AccessHelper.isPublic(m.access)) {
                 // TODO: Find better way to do this...
-                if(m.name.equals("az")) {
+                if(m.name.equals("av")) {
                     def.addMethod("isSneaking", m);
+                }
+                if(m.name.equals("az")) {
+                    def.addMethod("isInAir", m);
                 }
             }
         }

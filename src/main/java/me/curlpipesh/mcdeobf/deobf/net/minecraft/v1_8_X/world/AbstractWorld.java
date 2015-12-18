@@ -55,9 +55,9 @@ public class AbstractWorld extends Deobfuscator {
         }
 
         for(FieldNode f : (List<FieldNode>) cn.fields) {
-            if(f.desc.contains(entity.get().getKey().getObfuscatedDescription()) && f.desc.contains("List")) {
+            if(f.signature != null && f.signature.contains(entity.get().getKey().getObfuscatedDescription()) && f.desc.contains("List")) {
                 def.addField("loadedEntities", f.name);
-            } else if(f.desc.contains(blockEntity.get().getKey().getObfuscatedDescription()) && f.desc.contains("List")) {
+            } else if(f.signature != null && f.signature.contains(blockEntity.get().getKey().getObfuscatedDescription()) && f.desc.contains("List")) {
                 def.addField("loadedBlockEntities", f.name);
             } else if(f.desc.contains(worldProvider.get().getKey().getObfuscatedDescription())) {
                 def.addField("worldProvider", f.name);
