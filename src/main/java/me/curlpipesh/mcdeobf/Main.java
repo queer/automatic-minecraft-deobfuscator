@@ -7,13 +7,11 @@ import me.curlpipesh.mcdeobf.deobf.ClassDef;
 import me.curlpipesh.mcdeobf.deobf.Deobfuscator;
 import me.curlpipesh.mcdeobf.deobf.Version;
 import me.curlpipesh.mcdeobf.deobf.versions.Version1_8_X;
+import me.curlpipesh.mcdeobf.deobf.versions.Version1_9_X;
 import me.curlpipesh.mcdeobf.json.ClassMap;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.jar.JarEntry;
@@ -43,11 +41,12 @@ public class Main {
     @SuppressWarnings({"MismatchedQueryAndUpdateOfCollection", "FieldCanBeLocal"})
     private final List<ClassDef> classDefs;
     
-    private final Version version;
+    private final Map<String, Version> versionMap;
+
+    private Version version;
 
     private Main() {
         classDefs = new CopyOnWriteArrayList<>();
-        version = new Version1_8_X();
 
         logger.setUseParentHandlers(false);
         logger.addHandler(new Handler() {
@@ -65,6 +64,10 @@ public class Main {
             public void close() throws SecurityException {
             }
         });
+
+        versionMap = new HashMap<>();
+        versionMap.put("1_8_X", new Version1_8_X());
+        versionMap.put("1_9_X", new Version1_9_X());
     }
 
     /**
@@ -76,8 +79,12 @@ public class Main {
         return instance;
     }
 
-    // TODO: Actually use version...
     private void run(String jar, String gameVersion) {
+        version = versionMap.getOrDefault(gameVersion, null);
+        if(version == null) {
+            throw new IllegalArgumentException("'" + gameVersion + "' is not a valid version!");
+        }
+
         int successes = 0;
         int max = version.getDeobfuscators().size();
         try {
@@ -153,7 +160,7 @@ public class Main {
 
             String json = gson.toJson(classMaps);
 
-            File file = new File("mapping.json");
+            File file = new File("mappings" + version.getVersionNumber() +  ".json");
 
             if(file.exists()) {
                 //noinspection ResultOfMethodCallIgnored

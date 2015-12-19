@@ -1,4 +1,4 @@
-package me.curlpipesh.mcdeobf.deobf.net.minecraft.v1_8_X.client;
+package me.curlpipesh.mcdeobf.deobf.net.minecraft.v1_9_X.client;
 
 import me.curlpipesh.mcdeobf.Main;
 import me.curlpipesh.mcdeobf.deobf.ClassDef;
