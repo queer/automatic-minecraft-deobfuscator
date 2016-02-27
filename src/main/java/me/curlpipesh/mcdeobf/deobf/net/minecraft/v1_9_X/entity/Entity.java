@@ -37,11 +37,12 @@ public class Entity extends Deobfuscator {
         ClassDef def = new ClassDef(this);
 
         int doublesFound = 0;
+        int floatsFound = 0;
 
         for(FieldNode f : (List<FieldNode>) cn.fields) {
             if(f.desc.equals("D")) {
                 ++doublesFound;
-                if(doublesFound > 1) {
+                if(doublesFound > 1 && doublesFound <= 7) {
                     switch(doublesFound) {
                         case 2:
                             def.addField("prevX", f.name);
@@ -62,9 +63,17 @@ public class Entity extends Deobfuscator {
                             def.addField("curZ", f.name);
                             break;
                     }
-                    if(doublesFound > 7) {
+                }
+            }
+            if(f.desc.equals("F")) {
+                ++floatsFound;
+                switch(floatsFound) {
+                    case 1:
+                        def.addField("rotationYaw", f.name);
                         break;
-                    }
+                    case 2:
+                        def.addField("rotationPitch", f.name);
+                        break;
                 }
             }
         }
@@ -79,10 +88,10 @@ public class Entity extends Deobfuscator {
         for(MethodNode m : (List<MethodNode>) cn.methods) {
             if(AccessHelper.isPublic(m.access)) {
                 // TODO: Find better way to do this...
-                if(m.name.equals("av")) {
+                if(m.name.equals("aJ")) {
                     def.addMethod("isSneaking", m);
                 }
-                if(m.name.equals("az")) {
+                if(m.name.equals("aO")) {
                     def.addMethod("isInAir", m);
                 }
             }

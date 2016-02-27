@@ -5,6 +5,7 @@ import me.curlpipesh.mcdeobf.deobf.Deobfuscator;
 import me.curlpipesh.mcdeobf.deobf.Version;
 import me.curlpipesh.mcdeobf.deobf.net.minecraft.v1_9_X.block.*;
 import me.curlpipesh.mcdeobf.deobf.net.minecraft.v1_9_X.block.blockentity.*;
+import me.curlpipesh.mcdeobf.deobf.net.minecraft.v1_9_X.block.blocks.BlockSoulSand;
 import me.curlpipesh.mcdeobf.deobf.net.minecraft.v1_9_X.client.*;
 import me.curlpipesh.mcdeobf.deobf.net.minecraft.v1_9_X.client.gui.*;
 import me.curlpipesh.mcdeobf.deobf.net.minecraft.v1_9_X.client.renderer.*;
@@ -39,6 +40,7 @@ public class Version1_9_X implements Version {
         deobfuscators.addAll(Arrays.asList(new BlockEntityChest(),
                 new BlockEntityEnderChest(),
                 new BlockEntity(),
+                new BlockSoulSand(),
                 new FontRenderer(),
                 new Gui(),
                 new GuiChat(),
@@ -82,6 +84,7 @@ public class Version1_9_X implements Version {
                 new ItemStack(),
                 new PacketClientChatMessage(),
                 new PacketClientHandshake(),
+                new PacketClientTabComplete(),
                 new PacketServerChatMessage(),
                 new Packet(),
                 new PacketBuffer(),

@@ -24,7 +24,7 @@ public class EntityRenderer extends Deobfuscator {
 
     @Override
     public boolean deobfuscate(byte[] classData) {
-        return dumpConstantPoolStrings(new ClassReader(classData)).stream().filter(s -> s.toLowerCase().contains("shaders/post/")).count() > 0;
+        return dumpConstantPoolStrings(new ClassReader(classData)).stream().filter(s -> s.equals("shaders/post/creeper.json")).count() == 1;
     }
 
     @Override

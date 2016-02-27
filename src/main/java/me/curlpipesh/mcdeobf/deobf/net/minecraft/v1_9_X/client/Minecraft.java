@@ -48,15 +48,6 @@ public class Minecraft extends Deobfuscator {
                                 c.addMethod("startGame", m);
                                 break;
                             }
-                        }
-                    }
-                }
-            } else if(isPublic(m.access) && isVoid(m.desc)) {
-                Iterator<AbstractInsnNode> i = m.instructions.iterator();
-                while(i.hasNext()) {
-                    AbstractInsnNode node = i.next();
-                    if(node instanceof LdcInsnNode) {
-                        if(((LdcInsnNode) node).cst instanceof String) {
                             if(((String) ((LdcInsnNode) node).cst).equalsIgnoreCase("Manually triggered debug crash")) {
                                 c.addMethod("runGame", m);
                                 break;

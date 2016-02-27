@@ -29,6 +29,11 @@ public class PacketClientChatMessage extends Deobfuscator {
 
     @Override
     public ClassDef getClassDefinition(byte[] classData) {
-        return null;
+        ClassDef def = new ClassDef(this);
+        ClassReader cr = new ClassReader(classData);
+        ClassNode cn = new ClassNode();
+        cr.accept(cn, 0);
+        def.addField("chatMessage", ((FieldNode)cn.fields.get(0)).name);
+        return def;
     }
 }
