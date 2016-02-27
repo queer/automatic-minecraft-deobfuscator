@@ -16,7 +16,7 @@ public class EntityMonster extends Deobfuscator {
     @Override
     public boolean deobfuscate(byte[] classData) {
         // TODO: Better method of identification
-        return new ClassReader(classData).getClassName().startsWith("yw");
+        return new ClassReader(classData).getClassName().startsWith("yp");
     }
 
     @Override
