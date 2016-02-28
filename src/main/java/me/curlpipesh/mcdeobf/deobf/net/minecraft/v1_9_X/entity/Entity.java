@@ -38,12 +38,14 @@ public class Entity extends Deobfuscator {
 
         int doublesFound = 0;
         int floatsFound = 0;
+        int boolsFound = 0;
 
-        for(FieldNode f : (List<FieldNode>) cn.fields) {
-            if(f.desc.equals("D")) {
+        for (FieldNode f : (List<FieldNode>) cn.fields) {
+            if (f.desc.equals("D")) {
                 ++doublesFound;
-                if(doublesFound > 1 && doublesFound <= 7) {
-                    switch(doublesFound) {
+
+                if (doublesFound > 1 && doublesFound <= 10) {
+                    switch (doublesFound) {
                         case 2:
                             def.addField("prevX", f.name);
                             break;
@@ -62,36 +64,86 @@ public class Entity extends Deobfuscator {
                         case 7:
                             def.addField("curZ", f.name);
                             break;
+                        case 8:
+                            def.addField("motionX", f.name);
+                            break;
+                        case 9:
+                            def.addField("motionY", f.name);
+                            break;
+                        case 10:
+                            def.addField("motionZ", f.name);
+                            break;
                     }
                 }
             }
-            if(f.desc.equals("F")) {
+            if (f.desc.equals("F")) {
                 ++floatsFound;
-                switch(floatsFound) {
+                switch (floatsFound) {
                     case 1:
                         def.addField("rotationYaw", f.name);
                         break;
                     case 2:
                         def.addField("rotationPitch", f.name);
                         break;
+                    case 3:
+                        def.addField("prevRotationYaw", f.name);
+                        break;
+                    case 4:
+                        def.addField("prevRotationPitch", f.name);
+                        break;
                 }
+            }
+            if (f.desc.equals("Z")) {
+                ++boolsFound;
+
+                switch (boolsFound) {
+                    case 3:
+                        def.addField("onGround", f.name);
+                        break;
+                    case 4:
+                        def.addField("isCollidedHorizontally", f.name);
+                        break;
+                    case 5:
+                        def.addField("isCollidedVertically", f.name);
+                        break;
+                    case 6:
+                        def.addField("isCollided", f.name);
+                        break;
+                    case 7:
+                        def.addField("velocityChanged", f.name);
+                        break;
+                    case 8:
+                        def.addField("isInWeb", f.name);
+                        break;
+                    case 9:
+                        def.addField("isOutsideBorder", f.name);
+                        break;
+                    case 10:
+                        def.addField("isDead", f.name);
+                        break;
+                    case 11:
+                        def.addField("noClip", f.name);
+                        break;
+                }
+
+                System.out.println(f.name + " - " + f.desc + " - " + boolsFound);
             }
         }
 
         Optional<Map.Entry<Deobfuscator, Byte[]>> entityAttributes = Main.getInstance().getDataToMap().entrySet().stream()
                 .filter(d -> d.getKey().getDeobfuscatedName().equals("EntityAttributes")).findFirst();
-        if(!entityAttributes.isPresent()) {
+        if (!entityAttributes.isPresent()) {
             Main.getInstance().getLogger().severe("[Entity] Couldn't find EntityAttributes, bailing out.");
             return null;
         }
         //noinspection Convert2streamapi
-        for(MethodNode m : (List<MethodNode>) cn.methods) {
-            if(AccessHelper.isPublic(m.access)) {
+        for (MethodNode m : (List<MethodNode>) cn.methods) {
+            if (AccessHelper.isPublic(m.access)) {
                 // TODO: Find better way to do this...
-                if(m.name.equals("aJ")) {
+                if (m.name.equals("aJ")) {
                     def.addMethod("isSneaking", m);
                 }
-                if(m.name.equals("aO")) {
+                if (m.name.equals("aO")) {
                     def.addMethod("isInAir", m);
                 }
             }
