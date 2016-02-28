@@ -3,24 +3,37 @@ package me.curlpipesh.mcdeobf.deobf.versions;
 import lombok.Getter;
 import me.curlpipesh.mcdeobf.deobf.Deobfuscator;
 import me.curlpipesh.mcdeobf.deobf.Version;
-import me.curlpipesh.mcdeobf.deobf.net.minecraft.v1_9_X.block.*;
-import me.curlpipesh.mcdeobf.deobf.net.minecraft.v1_9_X.block.blockentity.*;
+import me.curlpipesh.mcdeobf.deobf.net.minecraft.v1_9_X.block.BlockEntity;
+import me.curlpipesh.mcdeobf.deobf.net.minecraft.v1_9_X.block.blockentity.BlockEntityChest;
+import me.curlpipesh.mcdeobf.deobf.net.minecraft.v1_9_X.block.blockentity.BlockEntityEnderChest;
 import me.curlpipesh.mcdeobf.deobf.net.minecraft.v1_9_X.block.blocks.BlockSoulSand;
-import me.curlpipesh.mcdeobf.deobf.net.minecraft.v1_9_X.client.*;
+import me.curlpipesh.mcdeobf.deobf.net.minecraft.v1_9_X.client.GameSettings;
+import me.curlpipesh.mcdeobf.deobf.net.minecraft.v1_9_X.client.Minecraft;
 import me.curlpipesh.mcdeobf.deobf.net.minecraft.v1_9_X.client.gui.*;
-import me.curlpipesh.mcdeobf.deobf.net.minecraft.v1_9_X.client.renderer.*;
+import me.curlpipesh.mcdeobf.deobf.net.minecraft.v1_9_X.client.renderer.EntityRenderer;
+import me.curlpipesh.mcdeobf.deobf.net.minecraft.v1_9_X.client.renderer.Framebuffer;
 import me.curlpipesh.mcdeobf.deobf.net.minecraft.v1_9_X.entity.*;
-import me.curlpipesh.mcdeobf.deobf.net.minecraft.v1_9_X.entity.player.*;
-import me.curlpipesh.mcdeobf.deobf.net.minecraft.v1_9_X.item.*;
-import me.curlpipesh.mcdeobf.deobf.net.minecraft.v1_9_X.item.inventory.*;
-import me.curlpipesh.mcdeobf.deobf.net.minecraft.v1_9_X.item.inventory.container.*;
+import me.curlpipesh.mcdeobf.deobf.net.minecraft.v1_9_X.entity.player.EntityClientPlayer;
+import me.curlpipesh.mcdeobf.deobf.net.minecraft.v1_9_X.entity.player.EntityPlayer;
+import me.curlpipesh.mcdeobf.deobf.net.minecraft.v1_9_X.entity.player.EntityPlayerMP;
+import me.curlpipesh.mcdeobf.deobf.net.minecraft.v1_9_X.item.Item;
+import me.curlpipesh.mcdeobf.deobf.net.minecraft.v1_9_X.item.ItemStack;
+import me.curlpipesh.mcdeobf.deobf.net.minecraft.v1_9_X.item.inventory.InventoryPlayer;
+import me.curlpipesh.mcdeobf.deobf.net.minecraft.v1_9_X.item.inventory.container.Container;
 import me.curlpipesh.mcdeobf.deobf.net.minecraft.v1_9_X.item.nbt.*;
-import me.curlpipesh.mcdeobf.deobf.net.minecraft.v1_9_X.network.*;
-import me.curlpipesh.mcdeobf.deobf.net.minecraft.v1_9_X.network.packet.*;
-import me.curlpipesh.mcdeobf.deobf.net.minecraft.v1_9_X.network.packet.client.*;
-import me.curlpipesh.mcdeobf.deobf.net.minecraft.v1_9_X.network.packet.server.*;
+import me.curlpipesh.mcdeobf.deobf.net.minecraft.v1_9_X.network.EnumConnectionState;
+import me.curlpipesh.mcdeobf.deobf.net.minecraft.v1_9_X.network.NetClientPlayHandler;
+import me.curlpipesh.mcdeobf.deobf.net.minecraft.v1_9_X.network.NetworkManager;
+import me.curlpipesh.mcdeobf.deobf.net.minecraft.v1_9_X.network.packet.Packet;
+import me.curlpipesh.mcdeobf.deobf.net.minecraft.v1_9_X.network.packet.PacketBuffer;
+import me.curlpipesh.mcdeobf.deobf.net.minecraft.v1_9_X.network.packet.client.PacketClientChatMessage;
+import me.curlpipesh.mcdeobf.deobf.net.minecraft.v1_9_X.network.packet.client.PacketClientHandshake;
+import me.curlpipesh.mcdeobf.deobf.net.minecraft.v1_9_X.network.packet.client.PacketClientTabComplete;
+import me.curlpipesh.mcdeobf.deobf.net.minecraft.v1_9_X.network.packet.server.PacketServerChatMessage;
 import me.curlpipesh.mcdeobf.deobf.net.minecraft.v1_9_X.util.*;
-import me.curlpipesh.mcdeobf.deobf.net.minecraft.v1_9_X.world.*;
+import me.curlpipesh.mcdeobf.deobf.net.minecraft.v1_9_X.world.AbstractWorld;
+import me.curlpipesh.mcdeobf.deobf.net.minecraft.v1_9_X.world.World;
+import me.curlpipesh.mcdeobf.deobf.net.minecraft.v1_9_X.world.WorldProvider;
 
 import java.util.Arrays;
 import java.util.List;
@@ -34,9 +47,12 @@ public class Version1_9_X implements Version {
     @Getter
     @SuppressWarnings({"SpellCheckingInspection", "MismatchedQueryAndUpdateOfCollection"})
     private final List<Deobfuscator> deobfuscators;
-    
+
     public Version1_9_X() {
         deobfuscators = new CopyOnWriteArrayList<>();
+        /*deobfuscators.addAll(Arrays.asList(new AxisAlignedBB(),
+                new Entity()
+        ));*/
         deobfuscators.addAll(Arrays.asList(new BlockEntityChest(),
                 new BlockEntityEnderChest(),
                 new BlockEntity(),
@@ -100,9 +116,10 @@ public class Version1_9_X implements Version {
                 new Vec3i(),
                 new AbstractWorld(),
                 new World(),
-                new WorldProvider()));
+                new WorldProvider(),
+                new AxisAlignedBB()));
     }
-    
+
     @Override
     public String getVersionNumber() {
         return "1.9.X";

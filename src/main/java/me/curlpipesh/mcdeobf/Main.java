@@ -33,17 +33,16 @@ public class Main {
 
     @Getter
     private final Logger logger = Logger.getLogger("Deobfuscator");
-
+    @SuppressWarnings({"MismatchedQueryAndUpdateOfCollection", "FieldCanBeLocal"})
+    private final List<ClassDef> classDefs;
+    private final Map<String, Version> versionMap;
     @Getter
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
     private Map<Deobfuscator, Byte[]> dataToMap = new ConcurrentHashMap<>();
-
-    @SuppressWarnings({"MismatchedQueryAndUpdateOfCollection", "FieldCanBeLocal"})
-    private final List<ClassDef> classDefs;
-    
-    private final Map<String, Version> versionMap;
-
     private Version version;
+
+    private long startTime;
+    private long endTime;
 
     private Main() {
         classDefs = new CopyOnWriteArrayList<>();
@@ -79,9 +78,21 @@ public class Main {
         return instance;
     }
 
+    public static void main(String[] args) {
+        String jarPath = args[0];
+        String version = args[1];
+        // Yes, it'd be better to use args[0] here, but I don't feel like getting
+        // that working with mvn right now
+        instance.startTime = System.currentTimeMillis();
+        instance.logger.info("Starting to deobfuscate at " + instance.startTime + "ms"); // TODO: Change this to a date format
+        instance.run(jarPath, version);
+        instance.endTime = System.currentTimeMillis();
+        instance.logger.info("Ended deobfuscation at " + instance.endTime + "ms taking " + (instance.endTime - instance.startTime) + "ms"); // TODO: Change this to a date format
+    }
+
     private void run(String jar, String gameVersion) {
         version = versionMap.getOrDefault(gameVersion, null);
-        if(version == null) {
+        if (version == null) {
             throw new IllegalArgumentException("'" + gameVersion + "' is not a valid version!");
         }
 
@@ -90,18 +101,18 @@ public class Main {
         try {
             JarFile jarFile = new JarFile(jar);
             Enumeration<JarEntry> entries = jarFile.entries();
-            while(entries.hasMoreElements() && !version.getDeobfuscators().isEmpty()) {
+            while (entries.hasMoreElements() && !version.getDeobfuscators().isEmpty()) {
                 JarEntry entry = entries.nextElement();
-                if(entry.getName().endsWith(".class")) {
-                    try(InputStream is = jarFile.getInputStream(entry)) {
-                        try(ByteArrayOutputStream os = new ByteArrayOutputStream()) {
+                if (entry.getName().endsWith(".class")) {
+                    try (InputStream is = jarFile.getInputStream(entry)) {
+                        try (ByteArrayOutputStream os = new ByteArrayOutputStream()) {
                             byte[] buffer = new byte[0xFFFF];
                             int len;
-                            while((len = is.read(buffer)) != -1) {
+                            while ((len = is.read(buffer)) != -1) {
                                 os.write(buffer, 0, len);
                             }
                             Deobfuscator d = deobfuscate(os.toByteArray());
-                            if(d != null) {
+                            if (d != null) {
                                 logger.info("Deobfuscated class \"" + entry.getName().replaceAll(".class", "")
                                         + "\": " + d.getDeobfuscatedName());
                                 ++successes;
@@ -109,26 +120,26 @@ public class Main {
                                 byte[] osClone = os.toByteArray();
                                 Byte[] bufferClone = new Byte[osClone.length];
                                 // Oh FFS, System#arraycopy
-                                for(int i = 0; i < osClone.length; i++) {
+                                for (int i = 0; i < osClone.length; i++) {
                                     bufferClone[i] = osClone[i];
                                 }
                                 dataToMap.put(d, bufferClone);
                             }
                         }
-                    } catch(IOException e) {
+                    } catch (IOException e) {
                         e.printStackTrace();
                     }
                 }
             }
-        } catch(IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         logger.info("Done! (" + successes + "/" + max + ")");
         //noinspection StatementWithEmptyBody
-        if(successes < max) {
+        if (successes < max) {
             logger.info("Had the following version.getDeobfuscators() remaining: ");
             version.getDeobfuscators().stream().forEach(d -> logger.info(d.getDeobfuscatedName()));
-        } else if(successes > max) {
+        } else if (successes > max) {
             logger.severe("Somehow had more successes than possible!?");
         } else {
             logger.info("Generating JSON Mappings...");
@@ -160,9 +171,9 @@ public class Main {
 
             String json = gson.toJson(classMaps);
 
-            File file = new File("mappings" + version.getVersionNumber() +  ".json");
+            File file = new File("mappings" + version.getVersionNumber() + ".json");
 
-            if(file.exists()) {
+            if (file.exists()) {
                 //noinspection ResultOfMethodCallIgnored
                 file.delete();
                 logger.warning("An older mappings.json was found, deleting it");
@@ -172,22 +183,22 @@ public class Main {
             fileWriter.write(json);
             fileWriter.close();
             logger.info("The Json mappings have been generated");
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     private byte[] moveBytes(Byte[] bytes) {
         byte[] newBytes = new byte[bytes.length];
-        for(int i = 0; i < bytes.length; i++) {
+        for (int i = 0; i < bytes.length; i++) {
             newBytes[i] = bytes[i];
         }
         return newBytes;
     }
 
     private Deobfuscator deobfuscate(byte[] classBytes) {
-        for(Deobfuscator d : version.getDeobfuscators()) {
-            if(d.deobfuscate(classBytes)) {
+        for (Deobfuscator d : version.getDeobfuscators()) {
+            if (d.deobfuscate(classBytes)) {
                 // This is supposed to stay in here. Please don't remove it ;-;
                 //classDefs.add(d.getClassDefinition(classBytes));
                 version.getDeobfuscators().remove(d);
@@ -195,13 +206,5 @@ public class Main {
             }
         }
         return null;
-    }
-
-    public static void main(String[] args) {
-        String jarPath = args[0];
-        String version = args[1];
-        // Yes, it'd be better to use args[0] here, but I don't feel like getting
-        // that working with mvn right now
-        instance.run(jarPath, version);
     }
 }

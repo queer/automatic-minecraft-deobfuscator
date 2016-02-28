@@ -33,17 +33,19 @@ public class FontRenderer extends Deobfuscator {
         cr.accept(cn, 0);
         ClassDef def = new ClassDef(this);
 
-        for(FieldNode f : (List<FieldNode>)cn.fields) {
-            if(f.desc.equals("I") && AccessHelper.isPublic(f.access)) {
+        for (FieldNode f : (List<FieldNode>) cn.fields) {
+            if (f.desc.equals("I") && AccessHelper.isPublic(f.access)) {
                 def.addField("fontHeight", f.name);
             }
         }
 
-        for(MethodNode m : (List<MethodNode>)cn.methods) {
-            if(m.desc.equals("(Ljava/lang/String;)I") && AccessHelper.isPublic(m.access)) {
-                def.addMethod("getStringWidth", m);
-            } else if(m.desc.equals("(Ljava/lang/String;FFIZ)I") && AccessHelper.isPublic(m.access)) {
-                def.addMethod("drawString", m);
+        for (MethodNode m : (List<MethodNode>) cn.methods) {
+            if (AccessHelper.isPublic(m.access)) {
+                if (m.desc.equals("(Ljava/lang/String;)I")) {
+                    def.addMethod("getStringWidth", m);
+                } else if (m.desc.equals("(Ljava/lang/String;FFIZ)I")) {
+                    def.addMethod("drawString", m);
+                }
             }
         }
 
