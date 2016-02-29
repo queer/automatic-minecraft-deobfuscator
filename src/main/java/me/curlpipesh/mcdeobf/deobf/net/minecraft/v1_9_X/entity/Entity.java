@@ -19,7 +19,7 @@ import java.util.Optional;
  */
 public class Entity extends Deobfuscator {
     public Entity() {
-        super("Entity");
+        super("Entity", DeobfuscatorPriority.HIGH);
     }
 
     @Override
@@ -134,6 +134,7 @@ public class Entity extends Deobfuscator {
             Main.getInstance().getLogger().severe("[Entity] Couldn't find EntityAttributes, bailing out.");
             return null;
         }
+
         //noinspection Convert2streamapi
         for (MethodNode m : (List<MethodNode>) cn.methods) {
             if (AccessHelper.isPublic(m.access)) {
@@ -146,7 +147,7 @@ public class Entity extends Deobfuscator {
                 }
             }
         }
-
+        
         return def;
     }
 }

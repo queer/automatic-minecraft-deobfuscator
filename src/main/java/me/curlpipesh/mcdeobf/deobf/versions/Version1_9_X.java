@@ -12,6 +12,9 @@ import me.curlpipesh.mcdeobf.deobf.net.minecraft.v1_9_X.client.Minecraft;
 import me.curlpipesh.mcdeobf.deobf.net.minecraft.v1_9_X.client.gui.*;
 import me.curlpipesh.mcdeobf.deobf.net.minecraft.v1_9_X.client.renderer.EntityRenderer;
 import me.curlpipesh.mcdeobf.deobf.net.minecraft.v1_9_X.client.renderer.Framebuffer;
+import me.curlpipesh.mcdeobf.deobf.net.minecraft.v1_9_X.client.renderer.GlStateManager;
+import me.curlpipesh.mcdeobf.deobf.net.minecraft.v1_9_X.client.renderer.entity.Render;
+import me.curlpipesh.mcdeobf.deobf.net.minecraft.v1_9_X.client.renderer.entity.RendererLivingEntity;
 import me.curlpipesh.mcdeobf.deobf.net.minecraft.v1_9_X.entity.*;
 import me.curlpipesh.mcdeobf.deobf.net.minecraft.v1_9_X.entity.player.EntityClientPlayer;
 import me.curlpipesh.mcdeobf.deobf.net.minecraft.v1_9_X.entity.player.EntityPlayer;
@@ -35,6 +38,7 @@ import me.curlpipesh.mcdeobf.deobf.net.minecraft.v1_9_X.world.AbstractWorld;
 import me.curlpipesh.mcdeobf.deobf.net.minecraft.v1_9_X.world.World;
 import me.curlpipesh.mcdeobf.deobf.net.minecraft.v1_9_X.world.WorldProvider;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -48,11 +52,14 @@ public class Version1_9_X implements Version {
     @SuppressWarnings({"SpellCheckingInspection", "MismatchedQueryAndUpdateOfCollection"})
     private final List<Deobfuscator> deobfuscators;
 
+    @Getter
+    @SuppressWarnings({"SpellCheckingInspection", "MismatchedQueryAndUpdateOfCollection"})
+    private final List<Deobfuscator> totalDeobfuscators;
+
     public Version1_9_X() {
         deobfuscators = new CopyOnWriteArrayList<>();
-        /*deobfuscators.addAll(Arrays.asList(new AxisAlignedBB(),
-                new Entity()
-        ));*/
+        totalDeobfuscators = new ArrayList<>();
+
         deobfuscators.addAll(Arrays.asList(new BlockEntityChest(),
                 new BlockEntityEnderChest(),
                 new BlockEntity(),
@@ -117,11 +124,36 @@ public class Version1_9_X implements Version {
                 new AbstractWorld(),
                 new World(),
                 new WorldProvider(),
-                new AxisAlignedBB()));
+                new AxisAlignedBB(),
+                new Render(),
+                new RendererLivingEntity(),
+                new GlStateManager()
+        ));
+        totalDeobfuscators.addAll(deobfuscators);
     }
 
     @Override
     public String getVersionNumber() {
         return "1.9.X";
+    }
+
+    public Deobfuscator getDeobfuscatorByName(String name) {
+        for (Deobfuscator deobfuscator : getTotalDeobfuscators()) {
+            if (deobfuscator.getDeobfuscatedName().equalsIgnoreCase(name)) {
+                return deobfuscator;
+            }
+        }
+
+        return null;
+    }
+
+    public Deobfuscator getDeobfuscator(Class clazz) {
+        for (Deobfuscator deobfuscator : getTotalDeobfuscators()) {
+            if (clazz.isInstance(deobfuscator)) {
+                return deobfuscator;
+            }
+        }
+
+        return null;
     }
 }

@@ -32,6 +32,8 @@ public class Session extends Deobfuscator {
         cr.accept(cn, 0);
 
         c.addField("username", ((List<FieldNode>) cn.fields).get(0).name);
+        c.addField("playerID", ((List<FieldNode>) cn.fields).get(1).name);
+        c.addField("token", ((List<FieldNode>) cn.fields).get(2).name);
 
         return c;
     }

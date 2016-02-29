@@ -39,6 +39,7 @@ public class Main {
     @Getter
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
     private Map<Deobfuscator, Byte[]> dataToMap = new ConcurrentHashMap<>();
+    @Getter
     private Version version;
 
     private long startTime;
@@ -150,7 +151,31 @@ public class Main {
     private void generateMappings() {
         List<ClassMap> classMaps = new ArrayList<>();
 
-        dataToMap.forEach((deobf, bytes) -> {
+        // TODO: Add priority
+
+        for (Deobfuscator.DeobfuscatorPriority priority : Deobfuscator.DeobfuscatorPriority.values()) {
+            for (Map.Entry<Deobfuscator, Byte[]> data : dataToMap.entrySet()) {
+                if (data.getKey().getPriority() == priority) {
+                    Deobfuscator deobf = data.getKey();
+                    Byte[] bytes = data.getValue();
+
+                    logger.info("Generating mappings for " + deobf.getDeobfuscatedName());
+                    ClassDef classDef = deobf.getClassDefinition(moveBytes(bytes));
+
+                    Map<String, String> fields = classDef == null ? null : classDef.getFields();
+                    List<ClassDef.MethodDef> methods = classDef == null ? null : classDef.getMethods();
+
+                    ClassMap classMap = new ClassMap(
+                            deobf.getDeobfuscatedName(), deobf.getObfuscatedName(), deobf.getObfuscatedDescription(),
+                            fields, methods);
+
+                    classMaps.add(classMap);
+                }
+            }
+        }
+
+        /*dataToMap.forEach((deobf, bytes) -> {
+            logger.info("Generating mappings for " + deobf.getDeobfuscatedName());
             ClassDef classDef = deobf.getClassDefinition(moveBytes(bytes));
 
             Map<String, String> fields = classDef == null ? null : classDef.getFields();
@@ -161,7 +186,7 @@ public class Main {
                     fields, methods);
 
             classMaps.add(classMap);
-        });
+        });*/
 
         try {
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
