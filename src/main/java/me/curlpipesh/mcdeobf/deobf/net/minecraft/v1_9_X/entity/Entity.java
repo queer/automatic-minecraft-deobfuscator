@@ -125,8 +125,6 @@ public class Entity extends Deobfuscator {
                         def.addField("noClip", f.name);
                         break;
                 }
-
-                System.out.println(f.name + " - " + f.desc + " - " + boolsFound);
             }
         }
 
