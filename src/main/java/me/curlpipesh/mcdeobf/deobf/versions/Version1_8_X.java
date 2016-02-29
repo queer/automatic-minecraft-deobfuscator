@@ -11,6 +11,7 @@ import me.curlpipesh.mcdeobf.deobf.net.minecraft.v1_8_X.client.GameSettings;
 import me.curlpipesh.mcdeobf.deobf.net.minecraft.v1_8_X.client.Minecraft;
 import me.curlpipesh.mcdeobf.deobf.net.minecraft.v1_8_X.client.gui.*;
 import me.curlpipesh.mcdeobf.deobf.net.minecraft.v1_8_X.client.renderer.EntityRenderer;
+import me.curlpipesh.mcdeobf.deobf.net.minecraft.v1_8_X.client.renderer.Framebuffer;
 import me.curlpipesh.mcdeobf.deobf.net.minecraft.v1_8_X.entity.*;
 import me.curlpipesh.mcdeobf.deobf.net.minecraft.v1_8_X.entity.player.EntityClientPlayer;
 import me.curlpipesh.mcdeobf.deobf.net.minecraft.v1_8_X.entity.player.EntityPlayer;
