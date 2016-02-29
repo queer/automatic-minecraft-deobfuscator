@@ -19,7 +19,7 @@ import java.util.Optional;
  */
 public class Entity extends Deobfuscator {
     public Entity() {
-        super("Entity");
+        super("Entity", DeobfuscatorPriority.HIGH);
     }
 
     @Override
@@ -125,17 +125,10 @@ public class Entity extends Deobfuscator {
                         def.addField("noClip", f.name);
                         break;
                 }
-
-                System.out.println(f.name + " - " + f.desc + " - " + boolsFound);
             }
         }
 
-        Optional<Map.Entry<Deobfuscator, Byte[]>> entityAttributes = Main.getInstance().getDataToMap().entrySet().stream()
-                .filter(d -> d.getKey().getDeobfuscatedName().equals("EntityAttributes")).findFirst();
-        if (!entityAttributes.isPresent()) {
-            Main.getInstance().getLogger().severe("[Entity] Couldn't find EntityAttributes, bailing out.");
-            return null;
-        }
+
         //noinspection Convert2streamapi
         for (MethodNode m : (List<MethodNode>) cn.methods) {
             if (AccessHelper.isPublic(m.access)) {
@@ -147,6 +140,13 @@ public class Entity extends Deobfuscator {
                     def.addMethod("isInAir", m);
                 }
             }
+        }
+
+        Optional<Map.Entry<Deobfuscator, Byte[]>> entityAttributes = Main.getInstance().getDataToMap().entrySet().stream()
+                .filter(d -> d.getKey().getDeobfuscatedName().equals("EntityAttributes")).findFirst();
+        if (!entityAttributes.isPresent()) {
+            Main.getInstance().getLogger().severe("[Entity] Couldn't find EntityAttributes, bailing out.");
+            return def;
         }
 
         return def;

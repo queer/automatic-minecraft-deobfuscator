@@ -19,8 +19,16 @@ public abstract class Deobfuscator {
     @Setter
     private String obfuscatedName = "";
 
-    public Deobfuscator(String deobfName) {
+    @Getter
+    private DeobfuscatorPriority priority;
+
+    public Deobfuscator(String deobfName, DeobfuscatorPriority priority) {
         deobfuscatedName = deobfName;
+        this.priority = priority;
+    }
+
+    public Deobfuscator(String deobfuscatedName) {
+        this(deobfuscatedName, DeobfuscatorPriority.LOW);
     }
 
     /**
@@ -41,7 +49,7 @@ public abstract class Deobfuscator {
      *
      * @param classData A byte array representing the class to map
      * @return A <tt>ClassDef</tt> object that contains the obfuscation
-     *         mappings
+     * mappings
      */
     public abstract ClassDef getClassDefinition(byte[] classData);
 
@@ -52,19 +60,25 @@ public abstract class Deobfuscator {
     protected final List<String> dumpConstantPoolStrings(ClassReader cr) {
         List<String> constantPoolStrings = new ArrayList<>();
         int len = cr.getItemCount();
-        for(int i = 0; i < len; i++) {
+        for (int i = 0; i < len; i++) {
             try {
                 char[] buffer = new char[0xFFFF];
                 Object o = cr.readConst(i, buffer);
-                if(o instanceof String) {
+                if (o instanceof String) {
                     constantPoolStrings.add((String) o);
                 }
-            } catch(Exception e) {
-                if(!(e instanceof ArrayIndexOutOfBoundsException)) {
+            } catch (Exception e) {
+                if (!(e instanceof ArrayIndexOutOfBoundsException)) {
                     e.printStackTrace();
                 }
             }
         }
         return constantPoolStrings;
+    }
+
+    public enum DeobfuscatorPriority {
+        HIGH,
+        MEDIUM,
+        LOW
     }
 }
