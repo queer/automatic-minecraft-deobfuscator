@@ -31,12 +31,11 @@ public class RendererLivingEntity extends Deobfuscator {
     @Override
     @SuppressWarnings("unchecked")
     public ClassDef getClassDefinition(final byte[] classData) {
-        Main.getInstance().getLogger().info(getDeobfuscatedName() + " - " + getObfuscatedName());
         ClassReader cr = new ClassReader(classData);
         ClassNode cn = new ClassNode();
         cr.accept(cn, 0);
         ClassDef def = new ClassDef(this);
-        
+
         for (MethodNode m : (List<MethodNode>) cn.methods) {
             if (AccessHelper.isPublic(m.access)) {
 
