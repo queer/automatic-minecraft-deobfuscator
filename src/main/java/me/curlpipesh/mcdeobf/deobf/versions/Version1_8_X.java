@@ -64,6 +64,7 @@ public class Version1_8_X implements Version {
                 new GuiScreen(),
                 new GuiSingleplayer(),
                 new EntityRenderer(),
+                new Framebuffer(),
                 new GameSettings(),
                 new Minecraft(),
                 new EntityClientPlayer(),
