@@ -35,11 +35,11 @@ public class AbstractWorld extends Deobfuscator {
         ClassDef def = new ClassDef(this);
         cr.accept(cn, 0);
 
-        Optional<Map.Entry<Deobfuscator, Byte[]>> entity = Main.getInstance().getDataToMap().entrySet().stream()
+        Optional<Map.Entry<Deobfuscator, byte[]>> entity = Main.getInstance().getDataToMap().entrySet().stream()
                 .filter(d -> d.getKey().getDeobfuscatedName().equals("Entity")).findFirst();
-        Optional<Map.Entry<Deobfuscator, Byte[]>> blockEntity = Main.getInstance().getDataToMap().entrySet().stream()
+        Optional<Map.Entry<Deobfuscator, byte[]>> blockEntity = Main.getInstance().getDataToMap().entrySet().stream()
                 .filter(d -> d.getKey().getDeobfuscatedName().equals("BlockEntity")).findFirst();
-        Optional<Map.Entry<Deobfuscator, Byte[]>> worldProvider = Main.getInstance().getDataToMap().entrySet().stream()
+        Optional<Map.Entry<Deobfuscator, byte[]>> worldProvider = Main.getInstance().getDataToMap().entrySet().stream()
                 .filter(d -> d.getKey().getDeobfuscatedName().equals("WorldProvider")).findFirst();
         if(!entity.isPresent()) {
             Main.getInstance().getLogger().severe("[AbstractWorld] Couldn't find Entity, bailing out.");

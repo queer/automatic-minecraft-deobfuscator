@@ -33,7 +33,7 @@ public class GameSettings extends Deobfuscator {
         ClassDef def = new ClassDef(this);
 
         MethodNode suspect = null;
-        Optional<Map.Entry<Deobfuscator, Byte[]>> guiIngame = Main.getInstance().getDataToMap().entrySet().stream()
+        Optional<Map.Entry<Deobfuscator, byte[]>> guiIngame = Main.getInstance().getDataToMap().entrySet().stream()
                 .filter(d -> d.getKey().getDeobfuscatedName().equalsIgnoreCase("GuiIngame")).findFirst();
         if(!guiIngame.isPresent()) {
             Main.getInstance().getLogger().severe("[GameSettings] Couldn't find GuiIngame, bailing out.");
@@ -41,11 +41,7 @@ public class GameSettings extends Deobfuscator {
         }
 
         {
-            Byte[] stored = guiIngame.get().getValue();
-            byte[] output = new byte[stored.length];
-            for(int i = 0; i < stored.length; i++) {
-                output[i] = stored[i];
-            }
+            byte[] output = guiIngame.get().getValue();
             ClassReader cr2 = new ClassReader(output);
             ClassNode cn2 = new ClassNode();
             cr2.accept(cn2, 0);

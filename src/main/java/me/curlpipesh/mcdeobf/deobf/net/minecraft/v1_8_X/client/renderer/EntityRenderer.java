@@ -35,7 +35,7 @@ public class EntityRenderer extends Deobfuscator {
         cr.accept(cn, 0);
         ClassDef def = new ClassDef(this);
 
-        Optional<Map.Entry<Deobfuscator, Byte[]>> entityPlayer = Main.getInstance().getDataToMap().entrySet().stream()
+        Optional<Map.Entry<Deobfuscator, byte[]>> entityPlayer = Main.getInstance().getDataToMap().entrySet().stream()
                 .filter(d -> d.getKey().getDeobfuscatedName().equals("EntityPlayer")).findFirst();
         if(!entityPlayer.isPresent()) {
             Main.getInstance().getLogger().severe("[EntityRenderer] Couldn't find EntityPlayer, bailing out.");

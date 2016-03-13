@@ -32,7 +32,7 @@ public class BlockEntity extends Deobfuscator {
         ClassNode cn = new ClassNode();
         ClassDef def = new ClassDef(this);
         cr.accept(cn, 0);
-        Optional<Map.Entry<Deobfuscator, Byte[]>> blockPos = Main.getInstance().getDataToMap().entrySet().stream()
+        Optional<Map.Entry<Deobfuscator, byte[]>> blockPos = Main.getInstance().getDataToMap().entrySet().stream()
                 .filter(d -> d.getKey().getDeobfuscatedName().equals("BlockPos")).findFirst();
         if(!blockPos.isPresent()) {
             Main.getInstance().getLogger().severe("[BlockEntity] Couldn't find BlockPos, bailing out.");
