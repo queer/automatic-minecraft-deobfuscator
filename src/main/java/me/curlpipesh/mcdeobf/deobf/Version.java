@@ -10,4 +10,8 @@ public interface Version {
     String getVersionNumber();
 
     List<Deobfuscator> getDeobfuscators();
+
+    Deobfuscator getDeobfuscatorByName(String name);
+
+    Deobfuscator getDeobfuscator(Class clazz);
 }

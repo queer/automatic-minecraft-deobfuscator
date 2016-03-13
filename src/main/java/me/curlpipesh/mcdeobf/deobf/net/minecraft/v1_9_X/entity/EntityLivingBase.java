@@ -12,7 +12,7 @@ import java.util.List;
  */
 public class EntityLivingBase extends Deobfuscator {
     public EntityLivingBase() {
-        super("EntityLivingBase");
+        super("EntityLivingBase", DeobfuscatorPriority.HIGH);
     }
 
     @Override
