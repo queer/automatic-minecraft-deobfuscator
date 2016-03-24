@@ -11,6 +11,7 @@ import org.objectweb.asm.tree.MethodNode;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Optional;
 
 /**
@@ -23,24 +24,24 @@ public class Entity extends Deobfuscator {
     }
 
     @Override
-    public boolean deobfuscate(byte[] classData) {
-        List<String> c = dumpConstantPoolStrings(new ClassReader(classData));
+    public boolean deobfuscate(final byte[] classData) {
+        final List<String> c = dumpConstantPoolStrings(new ClassReader(classData));
         return c.contains("entityBaseTick") && c.contains("Checking entity block collision");
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public ClassDef getClassDefinition(byte[] classData) {
-        ClassReader cr = new ClassReader(classData);
-        ClassNode cn = new ClassNode();
+    public ClassDef getClassDefinition(final byte[] classData) {
+        final ClassReader cr = new ClassReader(classData);
+        final ClassNode cn = new ClassNode();
         cr.accept(cn, 0);
-        ClassDef def = new ClassDef(this);
+        final ClassDef def = new ClassDef(this);
 
         int doublesFound = 0;
         int floatsFound = 0;
         int boolsFound = 0;
 
-        for (FieldNode f : (List<FieldNode>) cn.fields) {
+        for (final FieldNode f : (List<FieldNode>) cn.fields) {
             if (f.desc.equals("D")) {
                 ++doublesFound;
 
@@ -128,7 +129,7 @@ public class Entity extends Deobfuscator {
             }
         }
 
-        Optional<Map.Entry<Deobfuscator, byte[]>> entityAttributes = Main.getInstance().getDataToMap().entrySet().stream()
+        final Optional<Entry<Deobfuscator, byte[]>> entityAttributes = Main.getInstance().getDataToMap().entrySet().stream()
                 .filter(d -> d.getKey().getDeobfuscatedName().equals("EntityAttributes")).findFirst();
         if (!entityAttributes.isPresent()) {
             Main.getInstance().getLogger().severe("[Entity] Couldn't find EntityAttributes, bailing out.");
@@ -136,7 +137,7 @@ public class Entity extends Deobfuscator {
         }
 
         //noinspection Convert2streamapi
-        for (MethodNode m : (List<MethodNode>) cn.methods) {
+        for (final MethodNode m : (List<MethodNode>) cn.methods) {
             if (AccessHelper.isPublic(m.access)) {
                 // TODO: Find better way to do this...
                 if (m.name.equals("aJ")) {

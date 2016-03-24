@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import lombok.Getter;
 import me.curlpipesh.mcdeobf.deobf.ClassDef;
+import me.curlpipesh.mcdeobf.deobf.ClassDef.MethodDef;
 import me.curlpipesh.mcdeobf.deobf.Deobfuscator;
 import me.curlpipesh.mcdeobf.deobf.Version;
 import me.curlpipesh.mcdeobf.deobf.versions.Version1_8_X;
@@ -26,11 +27,12 @@ import java.util.logging.Logger;
  * @author c
  * @since 8/3/15
  */
-@SuppressWarnings("unused")
-public class Main {
+@SuppressWarnings({"unused", "Singleton"})
+public final class Main {
     /**
      * The singleton instance of Main. Guaranteed to never change.
      */
+    @SuppressWarnings("StaticVariableOfConcreteClass")
     private static final Main instance = new Main();
 
     @Getter
@@ -40,7 +42,8 @@ public class Main {
     private final Map<String, Version> versionMap;
     @Getter
     @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
-    private Map<Deobfuscator, byte[]> dataToMap = new ConcurrentHashMap<>();
+    private final Map<Deobfuscator, byte[]> dataToMap = new ConcurrentHashMap<>();
+    @Getter
     private Version version;
 
     private long startTime;
@@ -50,9 +53,10 @@ public class Main {
         classDefs = new CopyOnWriteArrayList<>();
 
         logger.setUseParentHandlers(false);
+        //noinspection AnonymousInnerClassWithTooManyMethods
         logger.addHandler(new Handler() {
             @Override
-            public void publish(LogRecord logRecord) {
+            public void publish(final LogRecord logRecord) {
                 System.out.println(String.format("[%s] [%s] %s", logRecord.getLoggerName(), logRecord.getLevel(),
                         logRecord.getMessage()));
             }
@@ -80,9 +84,9 @@ public class Main {
         return instance;
     }
 
-    public static void main(String[] args) {
-        String jarPath = args[0];
-        String version = args[1];
+    public static void main(final String[] args) {
+        final String jarPath = args[0];
+        final String version = args[1];
         // Yes, it'd be better to use args[0] here, but I don't feel like getting
         // that working with mvn right now
         instance.logger.setLevel(Level.CONFIG);
@@ -93,38 +97,38 @@ public class Main {
         instance.logger.config("Ended deobfuscation at " + instance.endTime + "ms taking " + (instance.endTime - instance.startTime) + "ms"); // TODO: Change this to a date format
     }
 
-    private void run(String jar, String gameVersion) {
+    private void run(final String jar, final String gameVersion) {
         version = versionMap.getOrDefault(gameVersion, null);
         if(version == null) {
-            throw new IllegalArgumentException("'" + gameVersion + "' is not a valid version!");
+            throw new IllegalArgumentException('\'' + gameVersion + "' is not a valid version!");
         }
 
-        AtomicInteger successes = new AtomicInteger(0);
-        int max = version.getDeobfuscators().size();
-        Map<String, byte[]> bytes = new ConcurrentHashMap<>();
+        final AtomicInteger successes = new AtomicInteger(0);
+        final int max = version.getDeobfuscators().size();
+        final Map<String, byte[]> bytes = new ConcurrentHashMap<>();
 
         long a = System.currentTimeMillis();
         try {
-            JarFile jarFile = new JarFile(jar);
-            Enumeration<JarEntry> entries = jarFile.entries();
+            final JarFile jarFile = new JarFile(jar);
+            final Enumeration<JarEntry> entries = jarFile.entries();
             while(entries.hasMoreElements() && !version.getDeobfuscators().isEmpty()) {
-                JarEntry entry = entries.nextElement();
+                final JarEntry entry = entries.nextElement();
                 if(entry.getName().endsWith(".class")) {
                     try(InputStream is = jarFile.getInputStream(entry)) {
                         try(ByteArrayOutputStream os = new ByteArrayOutputStream()) {
-                            byte[] buffer = new byte[0xFFFF];
+                            final byte[] buffer = new byte[0xFFFF];
                             int len;
                             while((len = is.read(buffer)) != -1) {
                                 os.write(buffer, 0, len);
                             }
                             bytes.put(entry.getName(), os.toByteArray());
                         }
-                    } catch(IOException e) {
+                    } catch(final IOException e) {
                         e.printStackTrace();
                     }
                 }
             }
-        } catch(IOException e) {
+        } catch(final IOException e) {
             e.printStackTrace();
         }
         logger.config("JAR load: " + (System.currentTimeMillis() - a) + "ms");
@@ -132,9 +136,9 @@ public class Main {
 
         a = System.currentTimeMillis();
         bytes.entrySet().parallelStream().forEach(entry -> {
-            String name = entry.getKey();
-            byte[] e = entry.getValue();
-            Deobfuscator d = deobfuscate(e);
+            final String name = entry.getKey();
+            final byte[] e = entry.getValue();
+            final Deobfuscator d = deobfuscate(e);
             if(d != null) {
                 logger.info("Deobfuscated class \"" + name.replaceAll(".class", "")
                         + "\": " + d.getDeobfuscatedName());
@@ -144,7 +148,7 @@ public class Main {
             }
         });
         logger.config("Deobfuscate: " + (System.currentTimeMillis() - a) + "ms");
-        logger.info("Done! (" + successes + "/" + max + ")");
+        logger.info("Done! (" + successes + '/' + max + ')');
         //noinspection StatementWithEmptyBody
         if(successes.get() < max) {
             logger.info("Had the following version.getDeobfuscators() remaining: ");
@@ -160,15 +164,15 @@ public class Main {
     }
 
     private void generateMappings() {
-        List<ClassMap> classMaps = new ArrayList<>();
+        final Collection<ClassMap> classMaps = new ArrayList<>();
 
         dataToMap.forEach((deobf, bytes) -> {
-            ClassDef classDef = deobf.getClassDefinition(bytes);
+            final ClassDef classDef = deobf.getClassDefinition(bytes);
 
-            Map<String, String> fields = classDef == null ? null : classDef.getFields();
-            List<ClassDef.MethodDef> methods = classDef == null ? null : classDef.getMethods();
+            final Map<String, String> fields = classDef == null ? null : classDef.getFields();
+            final List<MethodDef> methods = classDef == null ? null : classDef.getMethods();
 
-            ClassMap classMap = new ClassMap(
+            final ClassMap classMap = new ClassMap(
                     deobf.getDeobfuscatedName(), deobf.getObfuscatedName(), deobf.getObfuscatedDescription(),
                     fields, methods);
 
@@ -176,14 +180,14 @@ public class Main {
         });
 
         try {
-            Gson gson = new GsonBuilder().setPrettyPrinting().create();
+            final Gson gson = new GsonBuilder().setPrettyPrinting().create();
 
             // gson.toJson(classMaps, new FileWriter("mappings.json");
             // does not end the Json file correctly for some reason, so we write the file later below
 
-            String json = gson.toJson(classMaps);
+            final String json = gson.toJson(classMaps);
 
-            File file = new File("mappings" + version.getVersionNumber() + ".json");
+            final File file = new File("mappings" + version.getVersionNumber() + ".json");
 
             if(file.exists()) {
                 //noinspection ResultOfMethodCallIgnored
@@ -191,17 +195,17 @@ public class Main {
                 logger.warning("An older mappings.json was found, deleting it");
             }
 
-            FileWriter fileWriter = new FileWriter(file);
+            final FileWriter fileWriter = new FileWriter(file);
             fileWriter.write(json);
             fileWriter.close();
             logger.info("The Json mappings have been generated");
-        } catch(Exception e) {
+        } catch(final Exception e) {
             e.printStackTrace();
         }
     }
 
-    private Deobfuscator deobfuscate(byte[] classBytes) {
-        for(Deobfuscator d : version.getDeobfuscators()) {
+    private Deobfuscator deobfuscate(final byte[] classBytes) {
+        for(final Deobfuscator d : version.getDeobfuscators()) {
             if(d.deobfuscate(classBytes)) {
                 // This is supposed to stay in here. Please don't remove it ;-;
                 //classDefs.add(d.getClassDefinition(classBytes));

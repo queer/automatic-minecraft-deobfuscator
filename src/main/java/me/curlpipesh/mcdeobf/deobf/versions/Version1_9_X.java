@@ -13,6 +13,7 @@ import me.curlpipesh.mcdeobf.deobf.net.minecraft.v1_9_X.client.gui.*;
 import me.curlpipesh.mcdeobf.deobf.net.minecraft.v1_9_X.client.renderer.EntityRenderer;
 import me.curlpipesh.mcdeobf.deobf.net.minecraft.v1_9_X.client.renderer.Framebuffer;
 import me.curlpipesh.mcdeobf.deobf.net.minecraft.v1_9_X.client.renderer.GlStateManager;
+import me.curlpipesh.mcdeobf.deobf.net.minecraft.v1_9_X.client.renderer.RenderGlobal;
 import me.curlpipesh.mcdeobf.deobf.net.minecraft.v1_9_X.client.renderer.entity.Render;
 import me.curlpipesh.mcdeobf.deobf.net.minecraft.v1_9_X.client.renderer.entity.RendererLivingEntity;
 import me.curlpipesh.mcdeobf.deobf.net.minecraft.v1_9_X.entity.*;
@@ -75,6 +76,8 @@ public class Version1_9_X implements Version {
                 new GuiSingleplayer(),
                 new EntityRenderer(),
                 new Framebuffer(),
+                //new GlStateManager(),
+                new RenderGlobal(),
                 new GameSettings(),
                 new Minecraft(),
                 new EntityClientPlayer(),
@@ -137,8 +140,8 @@ public class Version1_9_X implements Version {
         return "1.9.X";
     }
 
-    public Deobfuscator getDeobfuscatorByName(String name) {
-        for (Deobfuscator deobfuscator : getTotalDeobfuscators()) {
+    public Deobfuscator getDeobfuscatorByName(final String name) {
+        for (final Deobfuscator deobfuscator : getTotalDeobfuscators()) {
             if (deobfuscator.getDeobfuscatedName().equalsIgnoreCase(name)) {
                 return deobfuscator;
             }
@@ -147,8 +150,8 @@ public class Version1_9_X implements Version {
         return null;
     }
 
-    public Deobfuscator getDeobfuscator(Class clazz) {
-        for (Deobfuscator deobfuscator : getTotalDeobfuscators()) {
+    public Deobfuscator getDeobfuscator(final Class clazz) {
+        for (final Deobfuscator deobfuscator : getTotalDeobfuscators()) {
             if (clazz.isInstance(deobfuscator)) {
                 return deobfuscator;
             }
