@@ -14,22 +14,22 @@ public class GameSettings extends Deobfuscator {
     }
 
     @Override
-    public boolean deobfuscate(byte[] classData) {
+    public boolean deobfuscate(final byte[] classData) {
         return dumpConstantPoolStrings(new ClassReader(classData)).stream()
                 .filter(s -> s.contains("key.categories.")).count() > 0;
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public ClassDef getClassDefinition(byte[] classData) {
-        ClassReader cr = new ClassReader(classData);
-        ClassNode cn = new ClassNode();
+    public ClassDef getClassDefinition(final byte[] classData) {
+        final ClassReader cr = new ClassReader(classData);
+        final ClassNode cn = new ClassNode();
         cr.accept(cn, 0);
-        ClassDef def = new ClassDef(this);
+        final ClassDef def = new ClassDef(this);
 
-        def.addField("isIngameGuiInDebugMode", "aq");
+        def.addField("isIngameGuiInDebugMode", "ar");
         int booleanCount = 0;
-        for(FieldNode f : (List<FieldNode>) cn.fields) {
+        for(final FieldNode f : (List<FieldNode>) cn.fields) {
             if(f.desc.equals("Z")) {
                 ++booleanCount;
                 if(booleanCount == 2) {

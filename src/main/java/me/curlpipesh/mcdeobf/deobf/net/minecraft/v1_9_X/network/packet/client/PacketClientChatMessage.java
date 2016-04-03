@@ -19,19 +19,20 @@ public class PacketClientChatMessage extends Deobfuscator {
 
     @Override
     @SuppressWarnings("unchecked")
-    public boolean deobfuscate(byte[] classData) {
-        ClassReader cr = new ClassReader(classData);
-        ClassNode cn = new ClassNode();
+    public boolean deobfuscate(final byte[] classData) {
+        final ClassReader cr = new ClassReader(classData);
+        final ClassNode cn = new ClassNode();
         cr.accept(cn, 0);
         return cr.getInterfaces().length == 1 && cn.fields.size() == 1 &&
-                ((List<FieldNode>) cn.fields).get(0).desc.equals("Ljava/lang/String;");
+                ((List<FieldNode>) cn.fields).get(0).desc.equals("Ljava/lang/String;")
+                && cn.methods.size() > 4;
     }
 
     @Override
-    public ClassDef getClassDefinition(byte[] classData) {
-        ClassDef def = new ClassDef(this);
-        ClassReader cr = new ClassReader(classData);
-        ClassNode cn = new ClassNode();
+    public ClassDef getClassDefinition(final byte[] classData) {
+        final ClassDef def = new ClassDef(this);
+        final ClassReader cr = new ClassReader(classData);
+        final ClassNode cn = new ClassNode();
         cr.accept(cn, 0);
         def.addField("chatMessage", ((FieldNode)cn.fields.get(0)).name);
         return def;
