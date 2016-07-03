@@ -8,6 +8,7 @@ import me.curlpipesh.mcdeobf.deobf.ClassDef.MethodDef;
 import me.curlpipesh.mcdeobf.deobf.Deobfuscator;
 import me.curlpipesh.mcdeobf.deobf.Version;
 import me.curlpipesh.mcdeobf.deobf.versions.Version1_8_X;
+import me.curlpipesh.mcdeobf.deobf.versions.Version1_10_X;
 import me.curlpipesh.mcdeobf.deobf.versions.Version1_9_X;
 import me.curlpipesh.mcdeobf.json.ClassMap;
 
@@ -73,6 +74,7 @@ public final class Main {
         versionMap = new HashMap<>();
         versionMap.put("1_8_X", new Version1_8_X());
         versionMap.put("1_9_X", new Version1_9_X());
+        versionMap.put("1_10_X", new Version1_10_X());
     }
 
     /**
