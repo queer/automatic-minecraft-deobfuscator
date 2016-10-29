@@ -145,9 +145,12 @@ public class Entity extends Deobfuscator {
                 if (m.name.equals("aO")) {
                     def.addMethod("isInAir", m);
                 }
+                if (m.name.equals("g")) {
+                    def.addMethod("setGlowing", m);
+                }
             }
         }
-        
+
         return def;
     }
 }

@@ -10,7 +10,6 @@ import org.objectweb.asm.tree.FieldNode;
 import org.objectweb.asm.tree.MethodNode;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 
@@ -145,6 +144,9 @@ public class Entity extends Deobfuscator {
                 }
                 if (m.name.equals("aO")) {
                     def.addMethod("isInAir", m);
+                }
+                if (m.name.equals("f")) {
+                    def.addMethod("setGlowing", m);
                 }
             }
         }
